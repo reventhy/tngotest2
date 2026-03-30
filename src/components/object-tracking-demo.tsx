@@ -1,7 +1,6 @@
 "use client";
 
 import jsQR from "jsqr";
-import Image from "next/image";
 import QRCode from "qrcode";
 import {
   startTransition,
@@ -66,7 +65,7 @@ type SampleQrCard = {
   id: string;
   title: string;
   value: string;
-  image: string;
+  svg: string;
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -263,9 +262,11 @@ export default function ObjectTrackingDemo() {
               ? "QR mo khoa thanh cong"
               : "QR unavailable",
           value: vehicle.qrValue,
-          image: await QRCode.toDataURL(vehicle.qrValue, {
-            margin: 1,
-            width: 220,
+          svg: await QRCode.toString(vehicle.qrValue, {
+            type: "svg",
+            errorCorrectionLevel: "H",
+            margin: 2,
+            width: 320,
             color: { dark: "#111111", light: "#ffffff" },
           }),
         })),
@@ -973,13 +974,10 @@ export default function ObjectTrackingDemo() {
             <div className={styles.qrGrid}>
               {sampleQrs.map((card) => (
                 <div key={card.id} className={styles.qrCard}>
-                  <Image
-                    alt={card.title}
+                  <div
+                    aria-label={card.title}
                     className={styles.qrImage}
-                    height={220}
-                    src={card.image}
-                    unoptimized
-                    width={220}
+                    dangerouslySetInnerHTML={{ __html: card.svg }}
                   />
                   <strong>{card.title}</strong>
                   <code>{card.value}</code>
