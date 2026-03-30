@@ -1,0 +1,913 @@
+.page {
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at top left, rgba(137, 199, 255, 0.26), transparent 28%),
+    radial-gradient(circle at top right, rgba(180, 255, 214, 0.2), transparent 22%),
+    linear-gradient(180deg, #f4f7fb 0%, #edf1f5 100%);
+  color: #111111;
+  padding: 48px 24px 64px;
+}
+
+.intro {
+  margin: 0 auto 28px;
+  max-width: 1220px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  margin-bottom: 12px;
+  border: 1px solid rgba(17, 17, 17, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.title {
+  max-width: 820px;
+  font-size: clamp(2.35rem, 4vw, 4.75rem);
+  line-height: 0.98;
+  letter-spacing: -0.06em;
+}
+
+.description {
+  margin-top: 18px;
+  max-width: 720px;
+  color: #4d4d55;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.statusCard,
+.panelCard {
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 24px 80px rgba(17, 17, 17, 0.06);
+  backdrop-filter: blur(18px);
+}
+
+.statusCard {
+  padding: 18px 20px;
+}
+
+.statusLabel {
+  display: block;
+  margin-bottom: 8px;
+  color: #6b6b74;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.statusCard strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 18px;
+  text-transform: capitalize;
+}
+
+.statusCard p {
+  color: #5b5b63;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 460px) minmax(300px, 420px);
+  justify-content: center;
+  gap: 28px;
+  margin: 0 auto;
+  max-width: 1220px;
+  align-items: start;
+}
+
+.phoneStage {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.phone {
+  position: relative;
+  width: min(100%, 402px);
+  overflow: hidden;
+  border: 1px solid #cfcfcf;
+  border-radius: 28px;
+  background: #ffffff;
+  box-shadow: 0 30px 120px rgba(34, 43, 59, 0.18);
+}
+
+.topBar {
+  display: grid;
+  grid-template-columns: 36px 1fr 36px;
+  align-items: center;
+  height: 56px;
+  border-bottom: 1px solid #d8d8d8;
+  background: #ffffff;
+  padding: 0 10px;
+}
+
+.topBar h2 {
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.backButton {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: 0;
+  background: transparent;
+  color: #111111;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.cameraView {
+  position: relative;
+  height: 520px;
+  overflow: hidden;
+  background: #e4e4e4;
+}
+
+.cameraViewMuted .cameraTint {
+  background: rgba(229, 229, 229, 0.76);
+}
+
+.cameraFeed,
+.cameraTint {
+  position: absolute;
+  inset: 0;
+}
+
+.cameraFeed {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: linear-gradient(180deg, #e7e7e7 0%, #dcdcdc 100%);
+}
+
+.cameraTint {
+  background:
+    linear-gradient(180deg, rgba(242, 242, 242, 0.4) 0%, rgba(217, 217, 217, 0.54) 100%),
+    radial-gradient(circle at center, transparent 0%, rgba(17, 17, 17, 0.08) 100%);
+}
+
+.cameraFallback {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 156px;
+  z-index: 2;
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 22px;
+  text-align: center;
+}
+
+.cameraFallbackTitle {
+  margin-bottom: 8px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.cameraFallbackBody {
+  color: #5d5d65;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.inlineAction {
+  margin-top: 16px;
+  border: 0;
+  border-radius: 999px;
+  background: #111111;
+  padding: 12px 18px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.liveChip,
+.qrBadge,
+.blackBadge,
+.whiteBadge,
+.statusBadge,
+.tipPill {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.liveChip {
+  top: 28px;
+  left: 86px;
+  transform: none;
+  border: 1px solid #d1d1d1;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.detectionBox {
+  position: absolute;
+  z-index: 2;
+  border-radius: 14px;
+}
+
+.detectionPrimary {
+  border: 2px solid #111111;
+}
+
+.detectionSecondary {
+  border: 1px solid rgba(154, 154, 154, 0.78);
+}
+
+.detectionTag {
+  position: absolute;
+  top: -28px;
+  left: -2px;
+  border: 1px solid #b5b5b5;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 5px 10px;
+  color: #393939;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.scanBand {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 214px;
+  height: 42px;
+  background: rgba(255, 255, 255, 0.24);
+  animation: scanPulse 2.6s ease-in-out infinite;
+}
+
+.horizon {
+  position: absolute;
+  left: 44px;
+  right: 44px;
+  top: 338px;
+  height: 1px;
+  border-top: 2px solid rgba(154, 154, 154, 0.72);
+}
+
+.directionCard {
+  position: absolute;
+  left: 50%;
+  bottom: 34px;
+  z-index: 3;
+  width: 168px;
+  transform: translateX(-50%);
+  border: 1px solid #d1d1d1;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 18px 18px 16px;
+  text-align: center;
+}
+
+.directionCard p {
+  color: #393939;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.directionArrow {
+  position: relative;
+  width: 14px;
+  height: 44px;
+  margin: 0 auto 10px;
+}
+
+.directionArrow::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  width: 2px;
+  height: 28px;
+  background: #111111;
+  transform: translateX(-50%);
+}
+
+.directionArrow span {
+  position: absolute;
+  top: 2px;
+  width: 8px;
+  height: 2px;
+  background: #111111;
+}
+
+.directionArrow span:first-child {
+  left: 0;
+  transform: rotate(45deg);
+  transform-origin: left center;
+}
+
+.directionArrow span:last-child {
+  right: 0;
+  transform: rotate(-45deg);
+  transform-origin: right center;
+}
+
+.qrBadge {
+  top: 30px;
+  background: #111111;
+  padding: 8px 18px;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tipPill {
+  bottom: 26px;
+  width: 286px;
+  border: 1px solid #d1d1d1;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 12px 18px;
+  color: #111111;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.qrFrame,
+.qrReadyFrame,
+.unavailableFrame {
+  position: absolute;
+  left: 50%;
+  top: 136px;
+  width: 168px;
+  height: 168px;
+  transform: translateX(-50%);
+  border: 2px solid #111111;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.cornerTopLeft,
+.cornerTopRight,
+.cornerBottomLeft,
+.cornerBottomRight {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+}
+
+.cornerTopLeft {
+  left: 24px;
+  top: 24px;
+  border-left: 3px solid #111111;
+  border-top: 3px solid #111111;
+  border-radius: 2px 0 0 0;
+}
+
+.cornerTopRight {
+  right: 24px;
+  top: 24px;
+  border-right: 3px solid #111111;
+  border-top: 3px solid #111111;
+  border-radius: 0 2px 0 0;
+}
+
+.cornerBottomLeft {
+  left: 24px;
+  bottom: 24px;
+  border-left: 3px solid #111111;
+  border-bottom: 3px solid #111111;
+  border-radius: 0 0 0 2px;
+}
+
+.cornerBottomRight {
+  right: 24px;
+  bottom: 24px;
+  border-right: 3px solid #111111;
+  border-bottom: 3px solid #111111;
+  border-radius: 0 0 2px 0;
+}
+
+.qrVehicleMark {
+  position: absolute;
+  inset: 45px;
+  border-radius: 16px;
+  border: 1px solid rgba(17, 17, 17, 0.25);
+  background:
+    linear-gradient(180deg, rgba(17, 17, 17, 0.12) 0%, rgba(17, 17, 17, 0.1) 100%);
+}
+
+.qrVehicleMark::before,
+.qrVehicleMark::after {
+  content: "";
+  position: absolute;
+  bottom: 10px;
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(17, 17, 17, 0.6);
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.qrVehicleMark::before {
+  left: 14px;
+}
+
+.qrVehicleMark::after {
+  right: 14px;
+}
+
+.qrReadyFrame {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.qrPattern {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  grid-template-columns: repeat(3, 14px);
+  gap: 0;
+  width: 42px;
+  transform: translate(-50%, -50%);
+}
+
+.qrPattern span {
+  width: 14px;
+  height: 14px;
+  background: #111111;
+  border-radius: 2px;
+}
+
+.qrPattern span:nth-child(1),
+.qrPattern span:nth-child(2),
+.qrPattern span:nth-child(4),
+.qrPattern span:nth-child(5),
+.qrPattern span:nth-child(6),
+.qrPattern span:nth-child(9) {
+  display: block;
+}
+
+.blackBadge,
+.statusBadge {
+  top: 314px;
+  background: #111111;
+  padding: 8px 16px;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.statusBadge {
+  top: 100px;
+  background: rgba(17, 17, 17, 0.96);
+}
+
+.whiteBadge {
+  top: 314px;
+  border: 1px solid #111111;
+  background: rgba(255, 255, 255, 0.98);
+  padding: 9px 20px;
+  color: #111111;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.unavailableCross {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 78px;
+  height: 78px;
+  transform: translate(-50%, -50%);
+}
+
+.unavailableCross::before,
+.unavailableCross::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 38px;
+  width: 78px;
+  height: 2px;
+  background: #111111;
+}
+
+.unavailableCross::before {
+  transform: rotate(45deg);
+}
+
+.unavailableCross::after {
+  transform: rotate(-45deg);
+}
+
+.unlockToast {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 18px;
+  z-index: 4;
+  border-radius: 20px;
+  padding: 14px 16px;
+  color: #111111;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+  box-shadow: 0 16px 50px rgba(17, 17, 17, 0.12);
+}
+
+.toastLoading {
+  background: rgba(255, 248, 219, 0.98);
+}
+
+.toastSuccess {
+  background: rgba(218, 255, 231, 0.98);
+}
+
+.toastError {
+  background: rgba(255, 222, 222, 0.98);
+}
+
+.bottomSheet {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 298px;
+  border-top: 1px solid #d8d8d8;
+  background: #ffffff;
+  padding: 20px 16px 24px;
+}
+
+.bottomSheet h3 {
+  font-size: 20px;
+  line-height: 1.4;
+  font-weight: 800;
+}
+
+.bottomSheet p {
+  color: #615f5f;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.primaryButton,
+.secondaryButton,
+.insuranceCard,
+.modalPrimary,
+.modalSecondary {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.primaryButton {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 48px;
+  border-radius: 999px;
+  background: #111111;
+  padding: 14px 18px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.primaryButton:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.secondaryButton {
+  background: transparent;
+  color: #615f5f;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.vehicleCard,
+.warningCard,
+.insuranceCard {
+  border: 1px solid #d8d8d8;
+  border-radius: 24px;
+}
+
+.vehicleCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #f7f7f7;
+  padding: 16px;
+}
+
+.vehicleHeader,
+.vehicleMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.vehicleHeader strong {
+  font-size: 15px;
+}
+
+.vehicleStatus {
+  display: inline-flex;
+  border: 1px solid #111111;
+  border-radius: 999px;
+  background: #ffffff;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.vehicleMeta span {
+  color: #615f5f;
+  font-size: 12px;
+}
+
+.vehicleMeta strong {
+  font-size: 12px;
+}
+
+.insuranceCard {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  background: #ffffff;
+  padding: 12px;
+  text-align: left;
+}
+
+.insuranceChecked {
+  border-color: #111111;
+  box-shadow: inset 0 0 0 1px #111111;
+}
+
+.checkbox {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #333333;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.insuranceContent {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.insuranceContent strong {
+  color: #1f1f1f;
+  font-size: 12px;
+}
+
+.insuranceContent small {
+  color: #757575;
+  font-size: 9px;
+}
+
+.insurancePrice {
+  color: #2e2e2e;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.warningCard {
+  background: #f7f7f7;
+  padding: 16px;
+}
+
+.warningCard strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.homeIndicator {
+  width: 144px;
+  height: 5px;
+  margin: 0 auto 10px;
+  border-radius: 999px;
+  background: #111111;
+}
+
+.sidePanel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.panelCard {
+  padding: 24px;
+}
+
+.panelCard h4 {
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.panelCard p {
+  color: #5f5f67;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.qrGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.qrCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  border-radius: 20px;
+  background: #ffffff;
+  padding: 16px;
+}
+
+.qrImage {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.qrCard strong {
+  font-size: 14px;
+}
+
+.qrCard code,
+.modal code {
+  overflow-wrap: anywhere;
+  border-radius: 10px;
+  background: #f0f3f8;
+  padding: 6px 8px;
+  color: #2b3a4d;
+  font-size: 12px;
+  font-family: var(--font-geist-mono), monospace;
+}
+
+.noteList {
+  margin-top: 14px;
+  padding-left: 18px;
+  color: #41414a;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.hiddenCanvas {
+  display: none;
+}
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(12, 16, 23, 0.42);
+  padding: 20px;
+}
+
+.modal {
+  width: min(100%, 460px);
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  border-radius: 28px;
+  background: #ffffff;
+  padding: 24px;
+  box-shadow: 0 30px 100px rgba(17, 17, 17, 0.18);
+}
+
+.modal h4 {
+  margin-bottom: 8px;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.modal p {
+  color: #5f5f67;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.modalForm {
+  margin-top: 18px;
+}
+
+.textInput {
+  width: 100%;
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  border-radius: 18px;
+  background: #f7f9fb;
+  padding: 14px 16px;
+  color: #111111;
+  font: inherit;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.modalPrimary,
+.modalSecondary {
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.modalPrimary {
+  background: #111111;
+  color: #ffffff;
+}
+
+.modalSecondary {
+  background: #eef2f6;
+  color: #111111;
+}
+
+@keyframes scanPulse {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(-12px);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: translateY(12px);
+  }
+}
+
+@media (max-width: 1080px) {
+  .statusGrid,
+  .workspace,
+  .qrGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .workspace {
+    max-width: 520px;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 24px 12px 40px;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .description {
+    font-size: 0.98rem;
+  }
+
+  .panelCard {
+    padding: 20px;
+  }
+}
