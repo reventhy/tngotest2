@@ -20,6 +20,10 @@
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
+  "optionalDependencies": {
+    "@next/swc-linux-x64-gnu": "16.2.1",
+    "@next/swc-linux-x64-musl": "16.2.1"
+  },
   "devDependencies": {
     "@types/node": "^20",
     "@types/qrcode": "^1.5.6",
