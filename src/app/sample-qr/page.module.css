@@ -65,6 +65,15 @@
   margin: 0 auto;
 }
 
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  max-width: 1080px;
+  margin: 0 auto 24px;
+}
+
+.infoCard,
 .card {
   border: 1px solid rgba(17, 17, 17, 0.08);
   border-radius: 28px;
@@ -72,6 +81,33 @@
   padding: 24px;
   box-shadow: 0 24px 80px rgba(17, 17, 17, 0.06);
   backdrop-filter: blur(18px);
+}
+
+.infoCard h2 {
+  margin-bottom: 12px;
+  font-size: 1.2rem;
+}
+
+.infoCard p,
+.infoCard li {
+  color: #535961;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.infoCard ul {
+  margin-top: 12px;
+  padding-left: 18px;
+}
+
+.infoCard code {
+  overflow-wrap: anywhere;
+  border-radius: 8px;
+  background: #f0f3f8;
+  padding: 2px 6px;
+  color: #2b3a4d;
+  font-size: 12px;
+  font-family: var(--font-geist-mono), monospace;
 }
 
 .cardTop {
@@ -153,6 +189,7 @@
 }
 
 @media (max-width: 860px) {
+  .infoGrid,
   .grid {
     grid-template-columns: 1fr;
   }

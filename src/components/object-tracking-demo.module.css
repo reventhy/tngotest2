@@ -1,11 +1,14 @@
 .page {
   min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background:
     radial-gradient(circle at top left, rgba(137, 199, 255, 0.26), transparent 28%),
     radial-gradient(circle at top right, rgba(180, 255, 214, 0.2), transparent 22%),
     linear-gradient(180deg, #f4f7fb 0%, #edf1f5 100%);
   color: #111111;
-  padding: 48px 24px 64px;
+  padding: 24px;
 }
 
 .intro {
@@ -97,7 +100,7 @@
 .phoneStage {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .phone {
@@ -747,19 +750,6 @@
   line-height: 1.6;
 }
 
-.panelLink {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 18px;
-  border-radius: 999px;
-  background: #111111;
-  padding: 12px 18px;
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 700;
-}
-
 .qrGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -926,15 +916,7 @@
 
 @media (max-width: 640px) {
   .page {
-    padding: 24px 12px 40px;
-  }
-
-  .title {
-    font-size: 2.5rem;
-  }
-
-  .description {
-    font-size: 0.98rem;
+    padding: 12px;
   }
 
   .panelCard {

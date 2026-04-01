@@ -1,12 +1,16 @@
 ## TNGo Object Tracking Demo
 
-Demo web cho flow live:
+Demo web nay duoc chia thanh 2 route ro rang:
+
+- `/`: chi hien phone UI cho live demo
+- `/sample-qr`: chua QR mau, huong dan test va thong tin phu
+
+Flow live demo:
 
 - Tim xe gan nhat bang live camera
 - Quet tem QR that tren camera
 - Mo khoa xe qua local API
 - Xu ly nhanh xe khong kha dung
-- Tach QR mau sang route rieng `/sample-qr`
 
 Project dung Next.js App Router, deploy duoc thang len Vercel.
 
@@ -17,7 +21,7 @@ npm install
 npm run dev
 ```
 
-Mo `http://localhost:3000` cho live demo.
+Mo `http://localhost:3000` cho live demo UI.
 
 Trang QR mau:
 

@@ -1,7 +1,6 @@
 "use client";
 
 import jsQR from "jsqr";
-import Link from "next/link";
 import {
   startTransition,
   useEffect,
@@ -188,7 +187,6 @@ export default function ObjectTrackingDemo() {
   const [unlockMessage, setUnlockMessage] = useState("");
   const [manualCodeOpen, setManualCodeOpen] = useState(false);
   const [manualCode, setManualCode] = useState("");
-  const [dataFetchedAt, setDataFetchedAt] = useState<string | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -215,7 +213,6 @@ export default function ObjectTrackingDemo() {
 
         setVehicles(payload.vehicles);
         setSelectedVehicle(getPrimaryVehicle(payload.vehicles));
-        setDataFetchedAt(payload.fetchedAt);
       } catch {
         if (!active) {
           return;
@@ -592,349 +589,297 @@ export default function ObjectTrackingDemo() {
 
   return (
     <main className={styles.page}>
-      <section className={styles.intro}>
-        <p className={styles.eyebrow}>TNGo object tracking demo</p>
-        <h1 className={styles.title}>Demo web dung camera that de tim xe va mo khoa.</h1>
-        <p className={styles.description}>
-          Flow nay giu layout theo Figma, nhung chay tren web bang camera that:
-          nhan dien xe dap tren live video, quet QR that va goi local API de mo khoa.
-        </p>
+      <section className={styles.phoneStage}>
+        <div className={styles.phone}>
+          <header className={styles.topBar}>
+            <button
+              className={styles.backButton}
+              onClick={() => {
+                if (stage === "tracking") {
+                  void startCamera();
+                  return;
+                }
 
-        <div className={styles.statusGrid}>
-          <div className={styles.statusCard}>
-            <span className={styles.statusLabel}>Camera</span>
-            <strong>{permissionState}</strong>
-            <p>{cameraMessage}</p>
-          </div>
-          <div className={styles.statusCard}>
-            <span className={styles.statusLabel}>Object detector</span>
-            <strong>{modelState}</strong>
-            <p>COCO-SSD chay local trong browser.</p>
-          </div>
-          <div className={styles.statusCard}>
-            <span className={styles.statusLabel}>Data source</span>
-            <strong>Next.js local API</strong>
-            <p>{dataFetchedAt ? `Fetched ${new Date(dataFetchedAt).toLocaleTimeString()}` : "Dang tai inventory demo..."}</p>
-          </div>
-        </div>
-      </section>
-
-      <section className={styles.workspace}>
-        <div className={styles.phoneStage}>
-          <div className={styles.phone}>
-            <header className={styles.topBar}>
-              <button
-                className={styles.backButton}
-                onClick={() => {
-                  if (stage === "tracking") {
-                    void startCamera();
-                    return;
-                  }
-
-                  resetToTracking();
-                }}
-                type="button"
-              >
-                &lt;
-              </button>
-              <h2>{getTopBarTitle(stage)}</h2>
-            </header>
-
-            <div
-              className={`${styles.cameraView} ${
-                stage === "unlock" || stage === "unavailable" ? styles.cameraViewMuted : ""
-              }`}
+                resetToTracking();
+              }}
+              type="button"
             >
-              <video
-                ref={videoRef}
-                className={styles.cameraFeed}
-                autoPlay
-                muted
-                playsInline
-              />
+              &lt;
+            </button>
+            <h2>{getTopBarTitle(stage)}</h2>
+          </header>
 
-              <div className={styles.cameraTint} />
+          <div
+            className={`${styles.cameraView} ${
+              stage === "unlock" || stage === "unavailable" ? styles.cameraViewMuted : ""
+            }`}
+          >
+            <video
+              ref={videoRef}
+              className={styles.cameraFeed}
+              autoPlay
+              muted
+              playsInline
+            />
 
-              {permissionState !== "granted" && (
-                <div className={styles.cameraFallback}>
-                  <p className={styles.cameraFallbackTitle}>Camera chua san sang</p>
-                  <p className={styles.cameraFallbackBody}>{cameraMessage}</p>
-                  <button
-                    className={styles.inlineAction}
-                    onClick={() => void startCamera()}
-                    type="button"
-                  >
-                    Bat camera
-                  </button>
-                </div>
-              )}
+            <div className={styles.cameraTint} />
 
-              {stage === "tracking" && permissionState === "granted" && (
-                <>
-                  <div className={styles.liveChip}>LIVE TRACKING / YOLO</div>
+            {permissionState !== "granted" && (
+              <div className={styles.cameraFallback}>
+                <p className={styles.cameraFallbackTitle}>Camera chua san sang</p>
+                <p className={styles.cameraFallbackBody}>{cameraMessage}</p>
+                <button
+                  className={styles.inlineAction}
+                  onClick={() => void startCamera()}
+                  type="button"
+                >
+                  Bat camera
+                </button>
+              </div>
+            )}
 
-                  {detections.map((detection) => (
-                    <div
-                      key={detection.id}
-                      className={`${styles.detectionBox} ${
-                        detection.highlight ? styles.detectionPrimary : styles.detectionSecondary
-                      }`}
-                      style={{
-                        left: `${detection.left}%`,
-                        top: `${detection.top}%`,
-                        width: `${detection.width}%`,
-                        height: `${detection.height}%`,
-                      }}
-                    >
-                      <span className={styles.detectionTag}>
-                        {detection.label} • {detection.distanceLabel}
-                      </span>
-                    </div>
-                  ))}
+            {stage === "tracking" && permissionState === "granted" && (
+              <>
+                <div className={styles.liveChip}>LIVE TRACKING / YOLO</div>
 
-                  <div className={styles.scanBand} />
-                  <div className={styles.horizon} />
-
-                  <div className={styles.directionCard}>
-                    <div className={styles.directionArrow}>
-                      <span />
-                      <span />
-                    </div>
-                    <p>{directionCopy}</p>
-                  </div>
-                </>
-              )}
-
-              {stage === "qr" && permissionState === "granted" && (
-                <>
-                  <div className={styles.qrBadge}>Tem QR</div>
-                  <div className={styles.qrFrame}>
-                    <span className={styles.cornerTopLeft} />
-                    <span className={styles.cornerTopRight} />
-                    <span className={styles.cornerBottomLeft} />
-                    <span className={styles.cornerBottomRight} />
-                    <div className={styles.qrVehicleMark} />
-                  </div>
-                  <div className={styles.tipPill}>{qrMessage}</div>
-                </>
-              )}
-
-              {stage === "unlock" && activeVehicle && (
-                <>
-                  <div className={styles.qrReadyFrame}>
-                    <span className={styles.cornerTopLeft} />
-                    <span className={styles.cornerTopRight} />
-                    <span className={styles.cornerBottomLeft} />
-                    <span className={styles.cornerBottomRight} />
-                    <div className={styles.qrPattern}>
-                      <span />
-                      <span />
-                      <span />
-                      <span />
-                      <span />
-                      <span />
-                    </div>
-                  </div>
-                  <div className={styles.blackBadge}>QR da nhan dien</div>
-
-                  {unlockState !== "idle" && (
-                    <div
-                      className={`${styles.unlockToast} ${
-                        unlockState === "success"
-                          ? styles.toastSuccess
-                          : unlockState === "error"
-                            ? styles.toastError
-                            : styles.toastLoading
-                      }`}
-                    >
-                      {unlockMessage}
-                    </div>
-                  )}
-                </>
-              )}
-
-              {stage === "unavailable" && (
-                <>
-                  <div className={styles.statusBadge}>STATUS: UNAVAILABLE</div>
-                  <div className={styles.unavailableFrame}>
-                    <span className={styles.cornerTopLeft} />
-                    <span className={styles.cornerTopRight} />
-                    <span className={styles.cornerBottomLeft} />
-                    <span className={styles.cornerBottomRight} />
-                    <div className={styles.unavailableCross} />
-                  </div>
-                  <div className={styles.whiteBadge}>Xe nay khong kha dung</div>
-                </>
-              )}
-            </div>
-
-            <section className={styles.bottomSheet}>
-              {stage === "tracking" && (
-                <>
-                  <h3>Dang theo doi xe gan nhat</h3>
-                  <p>
-                    Camera dang bam theo xe dap gan nhat trong khung hinh. Khi da
-                    thay xe ro, chuyen sang buoc quet tem QR.
-                  </p>
-                  <button
-                    className={styles.primaryButton}
-                    disabled={permissionState === "loading"}
-                    onClick={() => void handleTrackingPrimaryAction()}
-                    type="button"
-                  >
-                    {trackingPrimaryLabel}
-                  </button>
-                  <button
-                    className={styles.secondaryButton}
-                    onClick={() => setStage("qr")}
-                    type="button"
-                  >
-                    Bo qua huong dan
-                  </button>
-                </>
-              )}
-
-              {stage === "qr" && (
-                <>
-                  <h3>Canh dung tem QR</h3>
-                  <p>
-                    Khi tem QR lot vao vung khoa net, he thong se nhan dung ma tren
-                    xe. Neu can QR test, mo trang QR mau tach rieng hoac nhap ma thu cong.
-                  </p>
-                  <button
-                    className={styles.primaryButton}
-                    disabled={permissionState === "loading"}
-                    onClick={() => void handleQrPrimaryAction()}
-                    type="button"
-                  >
-                    {qrPrimaryLabel}
-                  </button>
-                  <button
-                    className={styles.secondaryButton}
-                    onClick={() => setManualCodeOpen(true)}
-                    type="button"
-                  >
-                    Nhap ma thu cong
-                  </button>
-                </>
-              )}
-
-              {stage === "unlock" && activeVehicle && (
-                <>
-                  <h3>Xe da san sang de mo khoa</h3>
-
-                  <article className={styles.vehicleCard}>
-                    <div className={styles.vehicleHeader}>
-                      <strong>{activeVehicle.id}</strong>
-                      <span className={styles.vehicleStatus}>{activeVehicle.statusLabel}</span>
-                    </div>
-
-                    <div className={styles.vehicleMeta}>
-                      <span>
-                        {activeVehicle.typeLabel} • {activeVehicle.batteryLabel}
-                      </span>
-                      <strong>{activeVehicle.fareLabel}</strong>
-                    </div>
-                  </article>
-
-                  <button
-                    className={`${styles.insuranceCard} ${
-                      insuranceEnabled ? styles.insuranceChecked : ""
+                {detections.map((detection) => (
+                  <div
+                    key={detection.id}
+                    className={`${styles.detectionBox} ${
+                      detection.highlight ? styles.detectionPrimary : styles.detectionSecondary
                     }`}
-                    onClick={() => setInsuranceEnabled((current) => !current)}
-                    type="button"
+                    style={{
+                      left: `${detection.left}%`,
+                      top: `${detection.top}%`,
+                      width: `${detection.width}%`,
+                      height: `${detection.height}%`,
+                    }}
                   >
-                    <span className={styles.checkbox}>{insuranceEnabled ? "✓" : ""}</span>
-                    <span className={styles.insuranceContent}>
-                      <strong>{activeVehicle.insuranceLabel}</strong>
-                      <small>{activeVehicle.insuranceNote}</small>
+                    <span className={styles.detectionTag}>
+                      {detection.label} • {detection.distanceLabel}
                     </span>
-                    <span className={styles.insurancePrice}>
-                      {activeVehicle.insurancePriceLabel}
-                    </span>
-                  </button>
+                  </div>
+                ))}
 
-                  <button
-                    className={styles.primaryButton}
-                    disabled={unlockState === "loading" || unlockState === "success"}
-                    onClick={() => void handleUnlockVehicle()}
-                    type="button"
+                <div className={styles.scanBand} />
+                <div className={styles.horizon} />
+
+                <div className={styles.directionCard}>
+                  <div className={styles.directionArrow}>
+                    <span />
+                    <span />
+                  </div>
+                  <p>{directionCopy}</p>
+                </div>
+              </>
+            )}
+
+            {stage === "qr" && permissionState === "granted" && (
+              <>
+                <div className={styles.qrBadge}>Tem QR</div>
+                <div className={styles.qrFrame}>
+                  <span className={styles.cornerTopLeft} />
+                  <span className={styles.cornerTopRight} />
+                  <span className={styles.cornerBottomLeft} />
+                  <span className={styles.cornerBottomRight} />
+                  <div className={styles.qrVehicleMark} />
+                </div>
+                <div className={styles.tipPill}>{qrMessage}</div>
+              </>
+            )}
+
+            {stage === "unlock" && activeVehicle && (
+              <>
+                <div className={styles.qrReadyFrame}>
+                  <span className={styles.cornerTopLeft} />
+                  <span className={styles.cornerTopRight} />
+                  <span className={styles.cornerBottomLeft} />
+                  <span className={styles.cornerBottomRight} />
+                  <div className={styles.qrPattern}>
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                </div>
+                <div className={styles.blackBadge}>QR da nhan dien</div>
+
+                {unlockState !== "idle" && (
+                  <div
+                    className={`${styles.unlockToast} ${
+                      unlockState === "success"
+                        ? styles.toastSuccess
+                        : unlockState === "error"
+                          ? styles.toastError
+                          : styles.toastLoading
+                    }`}
                   >
-                    {unlockState === "loading"
-                      ? "Dang mo khoa..."
-                      : unlockState === "success"
-                        ? "Xe da mo khoa"
-                        : "Mo khoa xe"}
-                  </button>
+                    {unlockMessage}
+                  </div>
+                )}
+              </>
+            )}
 
-                  <button
-                    className={styles.secondaryButton}
-                    onClick={() => setStage("unavailable")}
-                    type="button"
-                  >
-                    Bao su co
-                  </button>
-                </>
-              )}
-
-              {stage === "unavailable" && activeVehicle && (
-                <>
-                  <h3>Chuyen sang xe khac</h3>
-
-                  <article className={styles.warningCard}>
-                    <strong>QR nay thuoc xe khong kha dung</strong>
-                    <p>
-                      {activeVehicle.unavailableReason ||
-                        "Xe dang bao tri, pin yeu hoac da duoc giu. He thong se goi y xe gan nhat khac de ban quet lai."}
-                    </p>
-                  </article>
-
-                  <button
-                    className={styles.primaryButton}
-                    onClick={() => resetToTracking()}
-                    type="button"
-                  >
-                    Tim xe khac
-                  </button>
-                  <button
-                    className={styles.secondaryButton}
-                    onClick={() => setManualCodeOpen(true)}
-                    type="button"
-                  >
-                    Nhap ma xe thu cong
-                  </button>
-                </>
-              )}
-            </section>
-
-            <div className={styles.homeIndicator} />
+            {stage === "unavailable" && (
+              <>
+                <div className={styles.statusBadge}>STATUS: UNAVAILABLE</div>
+                <div className={styles.unavailableFrame}>
+                  <span className={styles.cornerTopLeft} />
+                  <span className={styles.cornerTopRight} />
+                  <span className={styles.cornerBottomLeft} />
+                  <span className={styles.cornerBottomRight} />
+                  <div className={styles.unavailableCross} />
+                </div>
+                <div className={styles.whiteBadge}>Xe nay khong kha dung</div>
+              </>
+            )}
           </div>
 
-          <canvas ref={qrCanvasRef} className={styles.hiddenCanvas} />
+          <section className={styles.bottomSheet}>
+            {stage === "tracking" && (
+              <>
+                <h3>Dang theo doi xe gan nhat</h3>
+                <p>
+                  Camera dang bam theo xe dap gan nhat trong khung hinh. Khi da thay
+                  xe ro, chuyen sang buoc quet tem QR.
+                </p>
+                <button
+                  className={styles.primaryButton}
+                  disabled={permissionState === "loading"}
+                  onClick={() => void handleTrackingPrimaryAction()}
+                  type="button"
+                >
+                  {trackingPrimaryLabel}
+                </button>
+                <button
+                  className={styles.secondaryButton}
+                  onClick={() => setStage("qr")}
+                  type="button"
+                >
+                  Bo qua huong dan
+                </button>
+              </>
+            )}
+
+            {stage === "qr" && (
+              <>
+                <h3>Canh dung tem QR</h3>
+                <p>
+                  Khi tem QR lot vao vung khoa net, he thong se nhan dung ma tren xe.
+                  Ban co the nhap ma thu cong neu dang test bang raw value.
+                </p>
+                <button
+                  className={styles.primaryButton}
+                  disabled={permissionState === "loading"}
+                  onClick={() => void handleQrPrimaryAction()}
+                  type="button"
+                >
+                  {qrPrimaryLabel}
+                </button>
+                <button
+                  className={styles.secondaryButton}
+                  onClick={() => setManualCodeOpen(true)}
+                  type="button"
+                >
+                  Nhap ma thu cong
+                </button>
+              </>
+            )}
+
+            {stage === "unlock" && activeVehicle && (
+              <>
+                <h3>Xe da san sang de mo khoa</h3>
+
+                <article className={styles.vehicleCard}>
+                  <div className={styles.vehicleHeader}>
+                    <strong>{activeVehicle.id}</strong>
+                    <span className={styles.vehicleStatus}>{activeVehicle.statusLabel}</span>
+                  </div>
+
+                  <div className={styles.vehicleMeta}>
+                    <span>
+                      {activeVehicle.typeLabel} • {activeVehicle.batteryLabel}
+                    </span>
+                    <strong>{activeVehicle.fareLabel}</strong>
+                  </div>
+                </article>
+
+                <button
+                  className={`${styles.insuranceCard} ${
+                    insuranceEnabled ? styles.insuranceChecked : ""
+                  }`}
+                  onClick={() => setInsuranceEnabled((current) => !current)}
+                  type="button"
+                >
+                  <span className={styles.checkbox}>{insuranceEnabled ? "✓" : ""}</span>
+                  <span className={styles.insuranceContent}>
+                    <strong>{activeVehicle.insuranceLabel}</strong>
+                    <small>{activeVehicle.insuranceNote}</small>
+                  </span>
+                  <span className={styles.insurancePrice}>
+                    {activeVehicle.insurancePriceLabel}
+                  </span>
+                </button>
+
+                <button
+                  className={styles.primaryButton}
+                  disabled={unlockState === "loading" || unlockState === "success"}
+                  onClick={() => void handleUnlockVehicle()}
+                  type="button"
+                >
+                  {unlockState === "loading"
+                    ? "Dang mo khoa..."
+                    : unlockState === "success"
+                      ? "Xe da mo khoa"
+                      : "Mo khoa xe"}
+                </button>
+
+                <button
+                  className={styles.secondaryButton}
+                  onClick={() => setStage("unavailable")}
+                  type="button"
+                >
+                  Bao su co
+                </button>
+              </>
+            )}
+
+            {stage === "unavailable" && activeVehicle && (
+              <>
+                <h3>Chuyen sang xe khac</h3>
+
+                <article className={styles.warningCard}>
+                  <strong>QR nay thuoc xe khong kha dung</strong>
+                  <p>
+                    {activeVehicle.unavailableReason ||
+                      "Xe dang bao tri, pin yeu hoac da duoc giu. He thong se goi y xe gan nhat khac de ban quet lai."}
+                  </p>
+                </article>
+
+                <button
+                  className={styles.primaryButton}
+                  onClick={() => resetToTracking()}
+                  type="button"
+                >
+                  Tim xe khac
+                </button>
+                <button
+                  className={styles.secondaryButton}
+                  onClick={() => setManualCodeOpen(true)}
+                  type="button"
+                >
+                  Nhap ma xe thu cong
+                </button>
+              </>
+            )}
+          </section>
+
+          <div className={styles.homeIndicator} />
         </div>
 
-        <aside className={styles.sidePanel}>
-          <div className={styles.panelCard}>
-            <h4>Trang QR mau tach rieng</h4>
-            <p>
-              Main web nay chi giu live demo. QR mau da duoc tach sang route rieng
-              de de deploy thanh mot web khac khi can.
-            </p>
-            <Link className={styles.panelLink} href="/sample-qr">
-              Mo trang QR mau
-            </Link>
-          </div>
-
-          <div className={styles.panelCard}>
-            <h4>Demo notes</h4>
-            <ul className={styles.noteList}>
-              <li>Buoc tim xe dung camera that + model COCO-SSD tren browser.</li>
-              <li>Buoc QR ho tro BarcodeDetector va fallback jsQR.</li>
-              <li>Du lieu xe va lenh mo khoa di qua route API trong Next.js.</li>
-              <li>Deploy thang len Vercel, khong can backend rieng de demo.</li>
-            </ul>
-          </div>
-        </aside>
+        <canvas ref={qrCanvasRef} className={styles.hiddenCanvas} />
       </section>
 
       {manualCodeOpen && (
@@ -942,8 +887,8 @@ export default function ObjectTrackingDemo() {
           <div className={styles.modal}>
             <h4>Nhap ma xe hoac raw QR</h4>
             <p>
-              Co the nhap vehicle ID hoac raw QR value. Neu can QR de scan, mo trang{" "}
-              <code>/sample-qr</code> tren thiet bi khac.
+              Co the nhap vehicle ID hoac raw QR value. QR mau va thong tin test nam
+              o route khac.
             </p>
 
             <form className={styles.modalForm} onSubmit={handleManualSubmit}>
