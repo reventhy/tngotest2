@@ -1,0 +1,365 @@
+.page {
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  background: linear-gradient(180deg, #dedede 0%, #eceff3 100%);
+}
+
+.phone {
+  width: min(100%, 402px);
+  min-height: min(874px, calc(100dvh - 48px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 24px 80px rgba(17, 17, 17, 0.12);
+}
+
+.statusBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 21px 24px 19px;
+}
+
+.statusTime {
+  font-family: "SF Pro Display", var(--font-inter), sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 22px;
+  color: #000000;
+}
+
+.statusIcons {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.content {
+  flex: 1;
+  padding: 0 16px;
+}
+
+.topSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profileRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.profileName {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #000000;
+}
+
+.profileButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 999px;
+  background: #d6d6d6;
+  cursor: pointer;
+}
+
+.searchBar {
+  width: 100%;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #d9d9d9;
+  border-radius: 999px;
+  background: #ffffff;
+  padding: 12px 16px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.searchPlaceholder {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+  color: #b3b3b3;
+}
+
+.balanceCard {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 0;
+}
+
+.balanceCopy {
+  flex: 1;
+}
+
+.balanceLabel {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #757575;
+}
+
+.balanceValue {
+  display: block;
+  margin-top: 8px;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: #1e1e1e;
+}
+
+.topUpButton {
+  min-width: 88px;
+  min-height: 40px;
+  border: 1px solid #2c2c2c;
+  border-radius: 8px;
+  background: #2c2c2c;
+  padding: 10px 12px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1;
+  color: #f5f5f5;
+  cursor: pointer;
+}
+
+.planSection {
+  padding: 4px 0 0;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  color: #000000;
+}
+
+.sectionHeader h2 {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.inlineLink {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #000000;
+  cursor: pointer;
+}
+
+.planGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.planCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.planImage {
+  position: relative;
+  height: 145px;
+  overflow: hidden;
+  background: #e3e3e3;
+}
+
+.planPlaceholder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.2;
+}
+
+.planCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #000000;
+}
+
+.planCopy h3 {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.planCopy p {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.quickActionGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding: 18px 0;
+}
+
+.quickActionCard {
+  min-height: 146px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  border: 0;
+  background: #c5c5c5;
+  padding: 8px;
+  color: #000000;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.quickActionCardDark {
+  background: #4f4f4f;
+  color: #ffffff;
+}
+
+.quickActionCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quickActionCopy h3 {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.quickActionCopy p {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.bikeLogo {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+}
+
+.promoBanner {
+  position: relative;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #e3e3e3;
+  color: #000000;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.bannerPlaceholder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.16;
+}
+
+.promoBanner span {
+  position: relative;
+  z-index: 1;
+}
+
+.bottomNav {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  height: 68px;
+}
+
+.navButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  background: #ffffff;
+  padding: 8px;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.navIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.navLabel {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  color: #757575;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.navLabelActive {
+  color: #2c2c2c;
+}
+
+.homeIndicatorArea {
+  height: 34px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 8px;
+  background: #ffffff;
+}
+
+.homeIndicator {
+  width: 144px;
+  height: 5px;
+  border-radius: 999px;
+  background: #000000;
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 0;
+    background: #ffffff;
+  }
+
+  .phone {
+    width: 100%;
+    min-height: 100dvh;
+    border-radius: 24px 24px 0 0;
+    box-shadow: none;
+  }
+}
