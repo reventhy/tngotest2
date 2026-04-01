@@ -747,6 +747,19 @@
   line-height: 1.6;
 }
 
+.panelLink {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 18px;
+  border-radius: 999px;
+  background: #111111;
+  padding: 12px 18px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .qrGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

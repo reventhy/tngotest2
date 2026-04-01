@@ -1,7 +1,7 @@
 "use client";
 
 import jsQR from "jsqr";
-import QRCode from "qrcode";
+import Link from "next/link";
 import {
   startTransition,
   useEffect,
@@ -59,13 +59,6 @@ type OverlayDetection = {
   centerX: number;
   centerY: number;
   highlight: boolean;
-};
-
-type SampleQrCard = {
-  id: string;
-  title: string;
-  value: string;
-  svg: string;
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -195,7 +188,6 @@ export default function ObjectTrackingDemo() {
   const [unlockMessage, setUnlockMessage] = useState("");
   const [manualCodeOpen, setManualCodeOpen] = useState(false);
   const [manualCode, setManualCode] = useState("");
-  const [sampleQrs, setSampleQrs] = useState<SampleQrCard[]>([]);
   const [dataFetchedAt, setDataFetchedAt] = useState<string | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -240,49 +232,6 @@ export default function ObjectTrackingDemo() {
       active = false;
     };
   }, []);
-
-  useEffect(() => {
-    if (!vehicles.length) {
-      return;
-    }
-
-    let active = true;
-
-    async function buildQrCards() {
-      const targets = [
-        vehicles.find((vehicle) => vehicle.status === "available"),
-        vehicles.find((vehicle) => vehicle.status === "unavailable"),
-      ].filter(Boolean) as DemoVehicle[];
-
-      const cards = await Promise.all(
-        targets.map(async (vehicle) => ({
-          id: vehicle.id,
-          title:
-            vehicle.status === "available"
-              ? "QR mo khoa thanh cong"
-              : "QR unavailable",
-          value: vehicle.qrValue,
-          svg: await QRCode.toString(vehicle.qrValue, {
-            type: "svg",
-            errorCorrectionLevel: "H",
-            margin: 2,
-            width: 320,
-            color: { dark: "#111111", light: "#ffffff" },
-          }),
-        })),
-      );
-
-      if (active) {
-        setSampleQrs(cards);
-      }
-    }
-
-    void buildQrCards();
-
-    return () => {
-      active = false;
-    };
-  }, [vehicles]);
 
   useEffect(() => {
     let active = true;
@@ -850,7 +799,7 @@ export default function ObjectTrackingDemo() {
                   <h3>Canh dung tem QR</h3>
                   <p>
                     Khi tem QR lot vao vung khoa net, he thong se nhan dung ma tren
-                    xe. Neu khong co QR ben ngoai, ban co the nhap ma demo thu cong.
+                    xe. Neu can QR test, mo trang QR mau tach rieng hoac nhap ma thu cong.
                   </p>
                   <button
                     className={styles.primaryButton}
@@ -966,24 +915,14 @@ export default function ObjectTrackingDemo() {
 
         <aside className={styles.sidePanel}>
           <div className={styles.panelCard}>
-            <h4>Sample QR de test</h4>
+            <h4>Trang QR mau tach rieng</h4>
             <p>
-              Neu demo tren phone, hay mo ma nay tren laptop khac hoac in ra. Neu
-              khong co man hinh thu hai, dung nut nhap ma thu cong.
+              Main web nay chi giu live demo. QR mau da duoc tach sang route rieng
+              de de deploy thanh mot web khac khi can.
             </p>
-            <div className={styles.qrGrid}>
-              {sampleQrs.map((card) => (
-                <div key={card.id} className={styles.qrCard}>
-                  <div
-                    aria-label={card.title}
-                    className={styles.qrImage}
-                    dangerouslySetInnerHTML={{ __html: card.svg }}
-                  />
-                  <strong>{card.title}</strong>
-                  <code>{card.value}</code>
-                </div>
-              ))}
-            </div>
+            <Link className={styles.panelLink} href="/sample-qr">
+              Mo trang QR mau
+            </Link>
           </div>
 
           <div className={styles.panelCard}>
@@ -1001,10 +940,10 @@ export default function ObjectTrackingDemo() {
       {manualCodeOpen && (
         <div className={styles.modalBackdrop}>
           <div className={styles.modal}>
-            <h4>Nhap ma xe hoac QR demo</h4>
+            <h4>Nhap ma xe hoac raw QR</h4>
             <p>
-              Vi du: <code>TNGO:X29Q-24.111</code> hoac{" "}
-              <code>TNGO:UNAVAILABLE:Z88U-05.502</code>
+              Co the nhap vehicle ID hoac raw QR value. Neu can QR de scan, mo trang{" "}
+              <code>/sample-qr</code> tren thiet bi khac.
             </p>
 
             <form className={styles.modalForm} onSubmit={handleManualSubmit}>
