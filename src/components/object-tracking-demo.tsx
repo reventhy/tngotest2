@@ -339,8 +339,9 @@ export default function ObjectTrackingDemo() {
         audio: false,
         video: {
           facingMode: { ideal: "environment" },
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+          aspectRatio: { ideal: 16 / 9 },
         },
       });
 
@@ -690,7 +691,13 @@ export default function ObjectTrackingDemo() {
                   muted
                   playsInline
                 />
-                <div className={styles.cameraTint} />
+                <div
+                  className={`${styles.cameraTint} ${
+                    stage === "tracking" || stage === "scanQr"
+                      ? styles.cameraTintLight
+                      : styles.cameraTintDefault
+                  }`}
+                />
               </>
             )}
 

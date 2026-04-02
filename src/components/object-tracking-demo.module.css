@@ -95,9 +95,19 @@
 }
 
 .cameraTint {
+  pointer-events: none;
+}
+
+.cameraTintDefault {
   background:
     linear-gradient(180deg, rgba(242, 242, 242, 0.34) 0%, rgba(217, 217, 217, 0.52) 100%),
     radial-gradient(circle at center, transparent 0%, rgba(17, 17, 17, 0.08) 100%);
+}
+
+.cameraTintLight {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.14) 100%),
+    radial-gradient(circle at center, transparent 0%, rgba(17, 17, 17, 0.02) 100%);
 }
 
 .cameraFallback {
