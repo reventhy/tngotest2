@@ -1,13 +1,9 @@
 "use client";
 
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import jsQR from "jsqr";
-import {
-  startTransition,
-  useEffect,
-  useEffectEvent,
-  useRef,
-  useState,
-} from "react";
+import { startTransition, useEffect, useEffectEvent, useRef, useState } from "react";
 import styles from "./object-tracking-demo.module.css";
 import {
   DEMO_VEHICLES,
@@ -18,10 +14,19 @@ import {
   type VehiclesResponse,
 } from "@/lib/demo-data";
 
-type DemoStage = "tracking" | "qr" | "unlock" | "unavailable";
+type DemoStage =
+  | "tracking"
+  | "locateQr"
+  | "scanQr"
+  | "confirm"
+  | "physicalUnlock"
+  | "success"
+  | "support"
+  | "unavailable";
 type PermissionState = "idle" | "loading" | "granted" | "denied" | "unsupported";
 type ModelState = "idle" | "loading" | "ready" | "error";
-type UnlockState = "idle" | "loading" | "success" | "error";
+type UnlockState = "idle" | "loading";
+type SupportMode = "lockStuck" | "unlockError";
 
 type Prediction = {
   bbox: [number, number, number, number] | number[];
@@ -60,6 +65,17 @@ type OverlayDetection = {
   highlight: boolean;
 };
 
+const TOP_BAR_TITLES: Record<DemoStage, string> = {
+  tracking: "Quét để tìm xe gần nhất",
+  locateQr: "Tìm tem QR trên xe",
+  scanQr: "Quét đúng mã QR",
+  confirm: "Xác nhận xe và mở khóa",
+  physicalUnlock: "Mở khóa xe vật lý",
+  success: "Xe đã sẵn sàng",
+  support: "Không mở được khóa?",
+  unavailable: "Xe không khả dụng",
+};
+
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
@@ -76,58 +92,42 @@ function formatMeters(areaRatio: number, index: number) {
 
 function getDirectionCopy(primary: OverlayDetection | null) {
   if (!primary) {
-    return "Huong camera ra cho co xe dap de bat dau theo doi.";
+    return "Hướng camera ra chỗ có xe đạp để bắt đầu theo dõi.";
   }
 
   if (primary.areaRatio < 0.065) {
-    return `Di thang ${primary.distanceLabel}`;
+    return `Đi thẳng ${primary.distanceLabel}`;
   }
 
   if (primary.centerX < 0.42) {
-    return "Xe dang lech trai, xoay camera sang phai.";
+    return "Xe đang lệch trái, xoay camera sang phải.";
   }
 
   if (primary.centerX > 0.58) {
-    return "Xe dang lech phai, xoay camera sang trai.";
+    return "Xe đang lệch phải, xoay camera sang trái.";
   }
 
   if (primary.centerY < 0.36) {
-    return "Ha camera xuong mot chut de bat dung xe.";
+    return "Hạ camera xuống một chút để bắt đúng xe.";
   }
 
   if (primary.centerY > 0.7) {
-    return "Nang camera len de can chinh khung hinh.";
+    return "Nâng camera lên để căn chỉnh khung hình.";
   }
 
-  return `Giu khung hinh on dinh, con khoang ${primary.distanceLabel}`;
-}
-
-function getTopBarTitle(stage: DemoStage) {
-  if (stage === "tracking") {
-    return "Quet de tim xe gan nhat";
-  }
-
-  if (stage === "qr") {
-    return "Dua camera vao tem QR";
-  }
-
-  if (stage === "unlock") {
-    return "Xac nhan xe va mo khoa";
-  }
-
-  return "Xe khong kha dung";
+  return `Giữ khung hình ổn định, còn khoảng ${primary.distanceLabel}`;
 }
 
 function getTrackingLabel(index: number, sourceClass: string) {
   if (index === 0) {
-    return "Xe gan nhat";
+    return "Xe gần nhất";
   }
 
   if (sourceClass === "motorcycle") {
-    return "Xe tro luc";
+    return "Xe trợ lực";
   }
 
-  return "Xe dap khac";
+  return "Xe đạp khác";
 }
 
 function buildOverlayDetections(predictions: Prediction[], video: HTMLVideoElement) {
@@ -164,27 +164,54 @@ function buildOverlayDetections(predictions: Prediction[], video: HTMLVideoEleme
   });
 }
 
+function getSupportContent(mode: SupportMode) {
+  if (mode === "unlockError") {
+    return {
+      hud: "CẦN THỬ LẠI",
+      pill: "Chưa gửi được lệnh mở khóa",
+      title: "Không thể gửi lệnh mở khóa",
+      cardTitle: "Thử lại khi mạng ổn định",
+      body:
+        "Kiểm tra kết nối rồi thử gửi lại lệnh mở khóa. Nếu vẫn lỗi, quay lại chọn xe khác hoặc báo sự cố.",
+      primaryLabel: "Thử gửi lại lệnh",
+      secondaryLabel: "Báo sự cố / đổi xe khác",
+    };
+  }
+
+  return {
+    hud: "CẦN HỖ TRỢ",
+    pill: "Khóa chưa nhả sau khi đã gửi lệnh",
+    title: "Xử lý khi khóa chưa mở",
+    cardTitle: "Thử lại tại cụm khóa vật lý",
+    body:
+      "Giữ xe đứng yên, thử gạt lại chốt một lần nữa. Nếu vẫn kẹt, đổi sang xe khác hoặc báo sự cố để đội vận hành hỗ trợ.",
+    primaryLabel: "Thử lại mở khóa",
+    secondaryLabel: "Báo sự cố / đổi xe khác",
+  };
+}
+
 export default function ObjectTrackingDemo() {
+  const router = useRouter();
+
   const [stage, setStage] = useState<DemoStage>("tracking");
+  const [stageHistory, setStageHistory] = useState<DemoStage[]>([]);
   const [vehicles, setVehicles] = useState<DemoVehicle[]>(DEMO_VEHICLES);
   const [selectedVehicle, setSelectedVehicle] = useState<DemoVehicle | null>(
     getPrimaryVehicle(DEMO_VEHICLES),
   );
   const [permissionState, setPermissionState] = useState<PermissionState>("idle");
   const [cameraMessage, setCameraMessage] = useState(
-    "Bat camera sau de demo nhan dien xe tren mobile web.",
+    "Bật camera sau để bắt đầu flow hướng dẫn thuê xe TNGo.",
   );
   const [modelState, setModelState] = useState<ModelState>("idle");
   const [detections, setDetections] = useState<OverlayDetection[]>([]);
   const [directionCopy, setDirectionCopy] = useState(
-    "Huong camera ra cho co xe dap de bat dau theo doi.",
+    "Hướng camera ra chỗ có xe đạp để bắt đầu theo dõi.",
   );
-  const [qrMessage, setQrMessage] = useState(
-    "Dua camera gan va song song voi tem QR.",
-  );
+  const [qrMessage, setQrMessage] = useState("Giữ điện thoại song song với tem QR.");
   const [insuranceEnabled, setInsuranceEnabled] = useState(false);
   const [unlockState, setUnlockState] = useState<UnlockState>("idle");
-  const [unlockMessage, setUnlockMessage] = useState("");
+  const [supportMode, setSupportMode] = useState<SupportMode>("lockStuck");
   const [manualCodeOpen, setManualCodeOpen] = useState(false);
   const [manualCode, setManualCode] = useState("");
 
@@ -198,6 +225,8 @@ export default function ObjectTrackingDemo() {
   const qrLockRef = useRef(false);
 
   const activeVehicle = selectedVehicle ?? getPrimaryVehicle(vehicles);
+  const usesLiveCamera = stage === "tracking" || stage === "scanQr";
+  const supportContent = getSupportContent(supportMode);
 
   useEffect(() => {
     let active = true;
@@ -280,7 +309,7 @@ export default function ObjectTrackingDemo() {
   }, []);
 
   useEffect(() => {
-    if (stage !== "qr") {
+    if (stage !== "scanQr") {
       qrLockRef.current = false;
       setManualCodeOpen(false);
       setManualCode("");
@@ -288,19 +317,20 @@ export default function ObjectTrackingDemo() {
 
     if (stage === "tracking") {
       setUnlockState("idle");
-      setUnlockMessage("");
+      setInsuranceEnabled(false);
+      setSupportMode("lockStuck");
     }
   }, [stage]);
 
   async function startCamera() {
     if (!navigator.mediaDevices?.getUserMedia) {
       setPermissionState("unsupported");
-      setCameraMessage("Trinh duyet nay khong ho tro truy cap camera.");
-      return;
+      setCameraMessage("Trình duyệt này không hỗ trợ truy cập camera.");
+      return false;
     }
 
     setPermissionState("loading");
-    setCameraMessage("Dang khoi dong camera sau...");
+    setCameraMessage("Đang khởi động camera sau...");
 
     try {
       streamRef.current?.getTracks().forEach((track) => track.stop());
@@ -316,7 +346,7 @@ export default function ObjectTrackingDemo() {
 
       const video = videoRef.current;
       if (!video) {
-        throw new Error("Video element khong san sang.");
+        throw new Error("Video element chưa sẵn sàng.");
       }
 
       streamRef.current = stream;
@@ -334,11 +364,45 @@ export default function ObjectTrackingDemo() {
       await video.play();
 
       setPermissionState("granted");
-      setCameraMessage("Camera dang hoat dong. Dua xe vao trong khung hinh.");
+      setCameraMessage("Camera đang hoạt động.");
+      return true;
     } catch {
       setPermissionState("denied");
-      setCameraMessage("Khong bat duoc camera. Hay cap quyen roi thu lai.");
+      setCameraMessage("Không bật được camera. Hãy cấp quyền rồi thử lại.");
+      return false;
     }
+  }
+
+  function goToStage(nextStage: DemoStage) {
+    if (nextStage === stage) {
+      return;
+    }
+
+    setStageHistory((currentHistory) => [...currentHistory, stage]);
+    setStage(nextStage);
+  }
+
+  function resetToTracking() {
+    setStageHistory([]);
+    setStage("tracking");
+    setUnlockState("idle");
+    setSupportMode("lockStuck");
+    setInsuranceEnabled(false);
+    setQrMessage("Giữ điện thoại song song với tem QR.");
+    setSelectedVehicle(getPrimaryVehicle(vehicles));
+  }
+
+  function handleBack() {
+    setManualCodeOpen(false);
+
+    if (stageHistory.length === 0) {
+      router.push("/");
+      return;
+    }
+
+    const previousStage = stageHistory[stageHistory.length - 1];
+    setStageHistory((currentHistory) => currentHistory.slice(0, -1));
+    setStage(previousStage);
   }
 
   async function resolveQrCode(rawValue: string) {
@@ -351,7 +415,7 @@ export default function ObjectTrackingDemo() {
 
     if (!matchedVehicle) {
       setQrMessage(
-        `Da doc ma "${rawValue}" nhung chua co trong inventory demo. Thu mot QR mau ben canh.`,
+        `Đã đọc mã "${rawValue}" nhưng chưa có trong inventory demo. Hãy thử QR khác hoặc nhập mã xe.`,
       );
 
       window.setTimeout(() => {
@@ -361,14 +425,14 @@ export default function ObjectTrackingDemo() {
     }
 
     setSelectedVehicle(matchedVehicle);
-    setQrMessage(`Da nhan dien ${matchedVehicle.id}. Dang chuyen trang...`);
+    setQrMessage(`Đã nhận diện ${matchedVehicle.id}. Đang chuyển bước...`);
 
     await new Promise((resolve) => {
-      window.setTimeout(resolve, 650);
+      window.setTimeout(resolve, 450);
     });
 
     startTransition(() => {
-      setStage(matchedVehicle.status === "available" ? "unlock" : "unavailable");
+      goToStage(matchedVehicle.status === "available" ? "confirm" : "unavailable");
     });
   }
 
@@ -399,7 +463,7 @@ export default function ObjectTrackingDemo() {
         setDirectionCopy(getDirectionCopy(primary));
       });
     } catch {
-      setDirectionCopy("Model nhan dien tam thoi khong phan tich duoc frame nay.");
+      setDirectionCopy("Model nhận diện tạm thời không phân tích được khung hình này.");
     } finally {
       trackingBusyRef.current = false;
     }
@@ -408,7 +472,7 @@ export default function ObjectTrackingDemo() {
   const runQrStep = useEffectEvent(async () => {
     if (
       qrBusyRef.current ||
-      stage !== "qr" ||
+      stage !== "scanQr" ||
       permissionState !== "granted" ||
       qrLockRef.current
     ) {
@@ -465,7 +529,7 @@ export default function ObjectTrackingDemo() {
         return;
       }
 
-      setQrMessage("Dua camera gan va song song voi tem QR.");
+      setQrMessage("Giữ điện thoại song song và đưa camera gần hơn với tem QR.");
     } finally {
       qrBusyRef.current = false;
     }
@@ -492,7 +556,7 @@ export default function ObjectTrackingDemo() {
   }, [modelState, permissionState, stage]);
 
   useEffect(() => {
-    if (stage !== "qr" || permissionState !== "granted") {
+    if (stage !== "scanQr" || permissionState !== "granted") {
       return;
     }
 
@@ -505,13 +569,41 @@ export default function ObjectTrackingDemo() {
     };
   }, [permissionState, stage]);
 
+  async function handleTrackingPrimaryAction() {
+    if (permissionState !== "granted") {
+      const ready = await startCamera();
+      if (!ready) {
+        return;
+      }
+    }
+
+    goToStage("locateQr");
+  }
+
+  async function handleLocateQrPrimaryAction() {
+    if (permissionState !== "granted") {
+      await startCamera();
+    }
+
+    setQrMessage("Giữ điện thoại song song với tem QR.");
+    goToStage("scanQr");
+  }
+
+  async function handleScanPrimaryAction() {
+    if (permissionState !== "granted") {
+      await startCamera();
+      return;
+    }
+
+    setQrMessage("Đang tìm QR trong khung hình...");
+  }
+
   async function handleUnlockVehicle() {
     if (!activeVehicle) {
       return;
     }
 
     setUnlockState("loading");
-    setUnlockMessage("Dang gui lenh mo khoa toi server demo...");
 
     try {
       const response = await fetch("/api/unlock", {
@@ -528,40 +620,28 @@ export default function ObjectTrackingDemo() {
       const payload = (await response.json()) as UnlockResponse;
 
       if (!response.ok || !payload.success) {
-        throw new Error(payload.message || "Khong the mo khoa xe.");
+        throw new Error(payload.message || "Không thể mở khóa xe.");
       }
 
-      setUnlockState("success");
-      setUnlockMessage(payload.message);
-    } catch (error) {
-      setUnlockState("error");
-      setUnlockMessage(
-        error instanceof Error ? error.message : "Khong the mo khoa xe trong luc nay.",
-      );
+      setUnlockState("idle");
+      goToStage("physicalUnlock");
+    } catch {
+      setUnlockState("idle");
+      setSupportMode("unlockError");
+      goToStage("support");
     }
   }
 
-  function resetToTracking() {
-    setStage("tracking");
-    setUnlockState("idle");
-    setUnlockMessage("");
-    setQrMessage("Dua camera gan va song song voi tem QR.");
-    setSelectedVehicle(getPrimaryVehicle(vehicles));
-  }
-
-  async function handleTrackingPrimaryAction() {
-    if (permissionState !== "granted") {
-      await startCamera();
+  function handleSupportPrimaryAction() {
+    if (supportMode === "unlockError") {
+      setSupportMode("lockStuck");
+      setStage("confirm");
+      setStageHistory((currentHistory) => currentHistory.slice(0, -1));
       return;
     }
 
-    setStage("qr");
-  }
-
-  async function handleQrPrimaryAction() {
-    if (permissionState !== "granted") {
-      await startCamera();
-    }
+    setStage("physicalUnlock");
+    setStageHistory((currentHistory) => currentHistory.slice(0, -1));
   }
 
   async function handleManualSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -575,65 +655,55 @@ export default function ObjectTrackingDemo() {
     setManualCodeOpen(false);
   }
 
-  const trackingPrimaryLabel =
-    permissionState === "loading"
-      ? "Dang mo camera..."
-      : permissionState !== "granted"
-        ? "Bat camera demo"
-        : detections.length
-          ? "Tiep tuc quet"
-          : "Huong camera ra xe";
-
-  const qrPrimaryLabel =
-    permissionState === "granted" ? "Giu camera on dinh" : "Bat camera de quet";
-
   return (
     <main className={styles.page}>
       <section className={styles.phoneStage}>
         <div className={styles.phone}>
           <header className={styles.topBar}>
             <button
+              aria-label="Quay lại bước trước"
               className={styles.backButton}
-              onClick={() => {
-                if (stage === "tracking") {
-                  void startCamera();
-                  return;
-                }
-
-                resetToTracking();
-              }}
+              onClick={handleBack}
               type="button"
             >
-              &lt;
+              ‹
             </button>
-            <h2>{getTopBarTitle(stage)}</h2>
+            <h2>{TOP_BAR_TITLES[stage]}</h2>
+            <div aria-hidden="true" className={styles.topBarSpacer} />
           </header>
 
           <div
             className={`${styles.cameraView} ${
-              stage === "unlock" || stage === "unavailable" ? styles.cameraViewMuted : ""
+              stage === "success"
+                ? styles.cameraViewSuccess
+                : stage === "support"
+                  ? styles.cameraViewWarning
+                  : styles.cameraViewNeutral
             }`}
           >
-            <video
-              ref={videoRef}
-              className={styles.cameraFeed}
-              autoPlay
-              muted
-              playsInline
-            />
+            {usesLiveCamera && (
+              <>
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  className={styles.cameraFeed}
+                  muted
+                  playsInline
+                />
+                <div className={styles.cameraTint} />
+              </>
+            )}
 
-            <div className={styles.cameraTint} />
-
-            {permissionState !== "granted" && (
+            {usesLiveCamera && permissionState !== "granted" && (
               <div className={styles.cameraFallback}>
-                <p className={styles.cameraFallbackTitle}>Camera chua san sang</p>
+                <p className={styles.cameraFallbackTitle}>Camera chưa sẵn sàng</p>
                 <p className={styles.cameraFallbackBody}>{cameraMessage}</p>
                 <button
                   className={styles.inlineAction}
                   onClick={() => void startCamera()}
                   type="button"
                 >
-                  Bat camera
+                  Bật camera
                 </button>
               </div>
             )}
@@ -641,6 +711,10 @@ export default function ObjectTrackingDemo() {
             {stage === "tracking" && permissionState === "granted" && (
               <>
                 <div className={styles.liveChip}>LIVE TRACKING / YOLO</div>
+                <div className={styles.focusTarget} aria-hidden="true">
+                  <span className={styles.focusCrossHorizontal} />
+                  <span className={styles.focusCrossVertical} />
+                </div>
 
                 {detections.map((detection) => (
                   <div
@@ -674,28 +748,48 @@ export default function ObjectTrackingDemo() {
               </>
             )}
 
-            {stage === "qr" && permissionState === "granted" && (
+            {stage === "locateQr" && (
               <>
-                <div className={styles.qrBadge}>Tem QR</div>
-                <div className={styles.qrFrame}>
-                  <span className={styles.cornerTopLeft} />
-                  <span className={styles.cornerTopRight} />
-                  <span className={styles.cornerBottomLeft} />
-                  <span className={styles.cornerBottomRight} />
-                  <div className={styles.qrVehicleMark} />
+                <div className={styles.guideFigure}>
+                  <Image
+                    alt="Minh họa vị trí tem QR trên xe TNGo"
+                    className={styles.guideImage}
+                    height={392}
+                    src="/demo/qr-location-guide.svg"
+                    width={320}
+                  />
+                  <div className={styles.guideLabelQr}>Tem QR</div>
                 </div>
-                <div className={styles.tipPill}>{qrMessage}</div>
+                <div className={styles.tipPill}>
+                  Tem QR thường nằm gần cổ xe hoặc trên cụm khóa.
+                </div>
               </>
             )}
 
-            {stage === "unlock" && activeVehicle && (
+            {stage === "scanQr" && (
               <>
-                <div className={styles.qrReadyFrame}>
-                  <span className={styles.cornerTopLeft} />
-                  <span className={styles.cornerTopRight} />
-                  <span className={styles.cornerBottomLeft} />
-                  <span className={styles.cornerBottomRight} />
-                  <div className={styles.qrPattern}>
+                <div className={styles.stepChip}>Bước 1 / 2</div>
+                {permissionState === "granted" && (
+                  <div className={styles.scanFocusFrame} aria-hidden="true">
+                    <span className={styles.focusCornerTopLeft} />
+                    <span className={styles.focusCornerTopRight} />
+                    <span className={styles.focusCornerBottomLeft} />
+                    <span className={styles.focusCornerBottomRight} />
+                  </div>
+                )}
+                <div className={styles.scanStatusPill}>{qrMessage}</div>
+              </>
+            )}
+
+            {stage === "confirm" && activeVehicle && (
+              <>
+                <div className={styles.confirmFrame}>
+                  <span className={styles.focusCornerTopLeft} />
+                  <span className={styles.focusCornerTopRight} />
+                  <span className={styles.focusCornerBottomLeft} />
+                  <span className={styles.focusCornerBottomRight} />
+                  <div className={styles.qrMatrix}>
+                    <span />
                     <span />
                     <span />
                     <span />
@@ -704,46 +798,59 @@ export default function ObjectTrackingDemo() {
                     <span />
                   </div>
                 </div>
-                <div className={styles.blackBadge}>QR da nhan dien</div>
+                <div className={styles.darkPill}>QR hợp lệ</div>
+              </>
+            )}
 
-                {unlockState !== "idle" && (
-                  <div
-                    className={`${styles.unlockToast} ${
-                      unlockState === "success"
-                        ? styles.toastSuccess
-                        : unlockState === "error"
-                          ? styles.toastError
-                          : styles.toastLoading
-                    }`}
-                  >
-                    {unlockMessage}
-                  </div>
-                )}
+            {stage === "physicalUnlock" && (
+              <>
+                <div className={styles.stepChip}>Bước 2 / 2</div>
+                <div className={styles.guideFigure}>
+                  <Image
+                    alt="Minh họa vị trí cụm khóa gần bánh sau"
+                    className={styles.guideImage}
+                    height={392}
+                    src="/demo/physical-unlock-guide.svg"
+                    width={320}
+                  />
+                </div>
+                <div className={styles.tipPill}>
+                  Tìm cụm khóa ở cạnh bánh sau rồi gạt chốt xuống.
+                </div>
+              </>
+            )}
+
+            {stage === "success" && (
+              <>
+                <div className={styles.darkHudPill}>KHÓA ĐÃ MỞ</div>
+                <div className={styles.lightStatusPill}>
+                  Bạn có thể lấy xe và bắt đầu chuyến đi
+                </div>
+              </>
+            )}
+
+            {stage === "support" && (
+              <>
+                <div className={styles.darkHudPill}>{supportContent.hud}</div>
+                <div className={styles.lightStatusPill}>{supportContent.pill}</div>
               </>
             )}
 
             {stage === "unavailable" && (
               <>
-                <div className={styles.statusBadge}>STATUS: UNAVAILABLE</div>
-                <div className={styles.unavailableFrame}>
-                  <span className={styles.cornerTopLeft} />
-                  <span className={styles.cornerTopRight} />
-                  <span className={styles.cornerBottomLeft} />
-                  <span className={styles.cornerBottomRight} />
-                  <div className={styles.unavailableCross} />
-                </div>
-                <div className={styles.whiteBadge}>Xe nay khong kha dung</div>
+                <div className={styles.darkHudPill}>STATUS: UNAVAILABLE</div>
+                <div className={styles.lightStatusPill}>Xe này không khả dụng</div>
               </>
             )}
           </div>
 
-          <section className={styles.bottomSheet}>
+          <section className={`${styles.bottomSheet} ${stage === "confirm" ? styles.bottomSheetTall : ""}`}>
             {stage === "tracking" && (
               <>
-                <h3>Dang theo doi xe gan nhat</h3>
+                <h3>Đang theo dõi xe gần nhất</h3>
                 <p>
-                  Camera dang bam theo xe dap gan nhat trong khung hinh. Khi da thay
-                  xe ro, chuyen sang buoc quet tem QR.
+                  Dùng camera để khóa đúng chiếc xe bạn muốn thuê. Khi đã thấy xe rõ
+                  trong khung hình, chuyển sang bước tìm tem QR.
                 </p>
                 <button
                   className={styles.primaryButton}
@@ -751,46 +858,63 @@ export default function ObjectTrackingDemo() {
                   onClick={() => void handleTrackingPrimaryAction()}
                   type="button"
                 >
-                  {trackingPrimaryLabel}
-                </button>
-                <button
-                  className={styles.secondaryButton}
-                  onClick={() => setStage("qr")}
-                  type="button"
-                >
-                  Bo qua huong dan
+                  Tiếp tục
                 </button>
               </>
             )}
 
-            {stage === "qr" && (
+            {stage === "locateQr" && (
               <>
-                <h3>Canh dung tem QR</h3>
+                <h3>Bước 1/2: Xác định vị trí tem QR</h3>
                 <p>
-                  Khi tem QR lot vao vung khoa net, he thong se nhan dung ma tren xe.
-                  Ban co the nhap ma thu cong neu dang test bang raw value.
+                  Sau khi tìm đúng xe, đưa camera về vùng cổ xe hoặc khung giữa. Tìm
+                  tem QR TNGo trước khi bắt đầu quét.
                 </p>
                 <button
                   className={styles.primaryButton}
-                  disabled={permissionState === "loading"}
-                  onClick={() => void handleQrPrimaryAction()}
+                  onClick={() => void handleLocateQrPrimaryAction()}
                   type="button"
                 >
-                  {qrPrimaryLabel}
+                  Tôi đã thấy mã QR
                 </button>
                 <button
                   className={styles.secondaryButton}
                   onClick={() => setManualCodeOpen(true)}
                   type="button"
                 >
-                  Nhap ma thu cong
+                  Nhập mã thủ công
                 </button>
               </>
             )}
 
-            {stage === "unlock" && activeVehicle && (
+            {stage === "scanQr" && (
               <>
-                <h3>Xe da san sang de mo khoa</h3>
+                <h3>Bước 1/2: Quét mã QR trên xe</h3>
+                <p>
+                  Giữ điện thoại song song với tem QR. Chỉ khi đọc đúng mã của chiếc xe
+                  bạn vừa tìm thấy thì mới chuyển sang bước mở khóa.
+                </p>
+                <button
+                  className={styles.primaryButton}
+                  disabled={permissionState === "loading"}
+                  onClick={() => void handleScanPrimaryAction()}
+                  type="button"
+                >
+                  {permissionState === "granted" ? "Giữ camera ổn định" : "Bật camera để quét"}
+                </button>
+                <button
+                  className={styles.secondaryButton}
+                  onClick={() => setManualCodeOpen(true)}
+                  type="button"
+                >
+                  Nhập mã thủ công
+                </button>
+              </>
+            )}
+
+            {stage === "confirm" && activeVehicle && (
+              <>
+                <h3>Xác nhận đúng xe của bạn</h3>
 
                 <article className={styles.vehicleCard}>
                   <div className={styles.vehicleHeader}>
@@ -818,59 +942,122 @@ export default function ObjectTrackingDemo() {
                     <strong>{activeVehicle.insuranceLabel}</strong>
                     <small>{activeVehicle.insuranceNote}</small>
                   </span>
-                  <span className={styles.insurancePrice}>
-                    {activeVehicle.insurancePriceLabel}
-                  </span>
+                  <span className={styles.insurancePrice}>{activeVehicle.insurancePriceLabel}</span>
                 </button>
 
                 <button
                   className={styles.primaryButton}
-                  disabled={unlockState === "loading" || unlockState === "success"}
+                  disabled={unlockState === "loading"}
                   onClick={() => void handleUnlockVehicle()}
                   type="button"
                 >
-                  {unlockState === "loading"
-                    ? "Dang mo khoa..."
-                    : unlockState === "success"
-                      ? "Xe da mo khoa"
-                      : "Mo khoa xe"}
+                  {unlockState === "loading" ? "Đang gửi lệnh..." : "Mở khóa xe"}
                 </button>
 
                 <button
                   className={styles.secondaryButton}
-                  onClick={() => setStage("unavailable")}
+                  onClick={() => setInsuranceEnabled((current) => !current)}
                   type="button"
                 >
-                  Bao su co
+                  Xem chi tiết bảo hiểm
+                </button>
+              </>
+            )}
+
+            {stage === "physicalUnlock" && (
+              <>
+                <h3>Bước 2/2: Mở khóa vật lý</h3>
+                <p>
+                  Sau khi app báo đã gửi lệnh mở khóa, giữ xe đứng yên, tìm cụm khóa bên
+                  cạnh bánh sau và kéo hoặc gạt chốt để lấy xe ra.
+                </p>
+                <button
+                  className={styles.primaryButton}
+                  onClick={() => goToStage("success")}
+                  type="button"
+                >
+                  Tôi đã mở khóa
+                </button>
+                <button
+                  className={styles.secondaryButton}
+                  onClick={() => {
+                    setSupportMode("lockStuck");
+                    goToStage("support");
+                  }}
+                  type="button"
+                >
+                  Khóa chưa mở?
+                </button>
+              </>
+            )}
+
+            {stage === "success" && (
+              <>
+                <h3>Mở khóa thành công</h3>
+                <article className={styles.infoCard}>
+                  <strong>Xe đã được mở khóa</strong>
+                  <p>
+                    Hệ thống đã ghi nhận phiên thuê. Kiểm tra phanh, yên và khu vực xung
+                    quanh trước khi bắt đầu di chuyển.
+                  </p>
+                </article>
+                <button
+                  className={styles.primaryButton}
+                  onClick={() => router.push("/")}
+                  type="button"
+                >
+                  Bắt đầu chuyến đi
+                </button>
+              </>
+            )}
+
+            {stage === "support" && (
+              <>
+                <h3>{supportContent.title}</h3>
+                <article className={styles.infoCard}>
+                  <strong>{supportContent.cardTitle}</strong>
+                  <p>{supportContent.body}</p>
+                </article>
+                <button
+                  className={styles.primaryButton}
+                  onClick={handleSupportPrimaryAction}
+                  type="button"
+                >
+                  {supportContent.primaryLabel}
+                </button>
+                <button
+                  className={styles.secondaryButton}
+                  onClick={() => resetToTracking()}
+                  type="button"
+                >
+                  {supportContent.secondaryLabel}
                 </button>
               </>
             )}
 
             {stage === "unavailable" && activeVehicle && (
               <>
-                <h3>Chuyen sang xe khac</h3>
-
-                <article className={styles.warningCard}>
-                  <strong>QR nay thuoc xe khong kha dung</strong>
+                <h3>Chuyển sang xe khác</h3>
+                <article className={styles.infoCard}>
+                  <strong>QR này thuộc xe không khả dụng</strong>
                   <p>
                     {activeVehicle.unavailableReason ||
-                      "Xe dang bao tri, pin yeu hoac da duoc giu. He thong se goi y xe gan nhat khac de ban quet lai."}
+                      "Xe đang bảo trì, pin yếu hoặc đã được giữ. Hệ thống sẽ tiếp tục gợi ý xe gần nhất khác để bạn quét lại."}
                   </p>
                 </article>
-
                 <button
                   className={styles.primaryButton}
                   onClick={() => resetToTracking()}
                   type="button"
                 >
-                  Tim xe khac
+                  Tìm xe khác
                 </button>
                 <button
                   className={styles.secondaryButton}
                   onClick={() => setManualCodeOpen(true)}
                   type="button"
                 >
-                  Nhap ma xe thu cong
+                  Nhập mã xe thủ công
                 </button>
               </>
             )}
@@ -885,25 +1072,29 @@ export default function ObjectTrackingDemo() {
       {manualCodeOpen && (
         <div className={styles.modalBackdrop}>
           <div className={styles.modal}>
-            <h4>Nhap ma xe hoac raw QR</h4>
+            <h4>Nhập mã xe hoặc raw QR</h4>
             <p>
-              Co the nhap vehicle ID hoac raw QR value. QR mau va thong tin test nam
-              o route khac.
+              Có thể nhập trực tiếp `vehicle ID` hoặc raw QR value để test nhanh flow mà
+              không cần quét camera.
             </p>
 
             <form className={styles.modalForm} onSubmit={handleManualSubmit}>
               <input
                 className={styles.textInput}
                 onChange={(event) => setManualCode(event.target.value)}
-                placeholder="Nhap ma xe hoac raw QR value"
+                placeholder="Nhập mã xe hoặc raw QR value"
                 value={manualCode}
               />
               <div className={styles.modalActions}>
-                <button className={styles.modalSecondary} onClick={() => setManualCodeOpen(false)} type="button">
-                  Huy
+                <button
+                  className={styles.modalSecondary}
+                  onClick={() => setManualCodeOpen(false)}
+                  type="button"
+                >
+                  Hủy
                 </button>
                 <button className={styles.modalPrimary} type="submit">
-                  Xac nhan
+                  Xác nhận
                 </button>
               </div>
             </form>

@@ -4,113 +4,26 @@
   justify-content: center;
   align-items: center;
   background:
-    radial-gradient(circle at top left, rgba(137, 199, 255, 0.26), transparent 28%),
-    radial-gradient(circle at top right, rgba(180, 255, 214, 0.2), transparent 22%),
-    linear-gradient(180deg, #f4f7fb 0%, #edf1f5 100%);
-  color: #111111;
+    radial-gradient(circle at top left, rgba(188, 220, 255, 0.28), transparent 24%),
+    radial-gradient(circle at bottom right, rgba(223, 236, 229, 0.52), transparent 22%),
+    linear-gradient(180deg, #f4f6fa 0%, #edf1f4 100%);
   padding: 24px;
-}
-
-.intro {
-  margin: 0 auto 28px;
-  max-width: 1220px;
-}
-
-.eyebrow {
-  display: inline-flex;
-  margin-bottom: 12px;
-  border: 1px solid rgba(17, 17, 17, 0.1);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.78);
-  padding: 8px 14px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.title {
-  max-width: 820px;
-  font-size: clamp(2.35rem, 4vw, 4.75rem);
-  line-height: 0.98;
-  letter-spacing: -0.06em;
-}
-
-.description {
-  margin-top: 18px;
-  max-width: 720px;
-  color: #4d4d55;
-  font-size: 1.05rem;
-  line-height: 1.7;
-}
-
-.statusGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-  margin-top: 28px;
-}
-
-.statusCard,
-.panelCard {
-  border: 1px solid rgba(17, 17, 17, 0.08);
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 0.84);
-  box-shadow: 0 24px 80px rgba(17, 17, 17, 0.06);
-  backdrop-filter: blur(18px);
-}
-
-.statusCard {
-  padding: 18px 20px;
-}
-
-.statusLabel {
-  display: block;
-  margin-bottom: 8px;
-  color: #6b6b74;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.statusCard strong {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 18px;
-  text-transform: capitalize;
-}
-
-.statusCard p {
-  color: #5b5b63;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.workspace {
-  display: grid;
-  grid-template-columns: minmax(0, 460px) minmax(300px, 420px);
-  justify-content: center;
-  gap: 28px;
-  margin: 0 auto;
-  max-width: 1220px;
-  align-items: start;
+  color: #111111;
 }
 
 .phoneStage {
   display: flex;
   justify-content: center;
-  align-items: center;
+  width: 100%;
 }
 
 .phone {
-  position: relative;
   width: min(100%, 402px);
   overflow: hidden;
   border: 1px solid #cfcfcf;
   border-radius: 28px;
   background: #ffffff;
-  box-shadow: 0 30px 120px rgba(34, 43, 59, 0.18);
+  box-shadow: 0 30px 120px rgba(34, 43, 59, 0.16);
 }
 
 .topBar {
@@ -119,14 +32,20 @@
   align-items: center;
   height: 56px;
   border-bottom: 1px solid #d8d8d8;
-  background: #ffffff;
   padding: 0 10px;
+  background: #ffffff;
 }
 
 .topBar h2 {
-  text-align: center;
   font-size: 15px;
   font-weight: 700;
+  text-align: center;
+}
+
+.backButton,
+.topBarSpacer {
+  width: 36px;
+  height: 36px;
 }
 
 .backButton {
@@ -136,7 +55,8 @@
   border: 0;
   background: transparent;
   color: #111111;
-  font-size: 20px;
+  font-size: 28px;
+  line-height: 1;
   cursor: pointer;
 }
 
@@ -144,11 +64,18 @@
   position: relative;
   height: 520px;
   overflow: hidden;
+}
+
+.cameraViewNeutral {
   background: #e4e4e4;
 }
 
-.cameraViewMuted .cameraTint {
-  background: rgba(229, 229, 229, 0.76);
+.cameraViewSuccess {
+  background: #f2f7f2;
+}
+
+.cameraViewWarning {
+  background: #faf5f0;
 }
 
 .cameraFeed,
@@ -161,35 +88,35 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  background: linear-gradient(180deg, #e7e7e7 0%, #dcdcdc 100%);
+  background: linear-gradient(180deg, #e8e8e8 0%, #dbdbdb 100%);
 }
 
 .cameraTint {
   background:
-    linear-gradient(180deg, rgba(242, 242, 242, 0.4) 0%, rgba(217, 217, 217, 0.54) 100%),
+    linear-gradient(180deg, rgba(242, 242, 242, 0.34) 0%, rgba(217, 217, 217, 0.52) 100%),
     radial-gradient(circle at center, transparent 0%, rgba(17, 17, 17, 0.08) 100%);
 }
 
 .cameraFallback {
   position: absolute;
-  left: 24px;
-  right: 24px;
-  top: 156px;
-  z-index: 2;
+  inset: 148px 24px auto;
+  z-index: 6;
   border: 1px solid rgba(17, 17, 17, 0.12);
   border-radius: 28px;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   padding: 22px;
   text-align: center;
+  backdrop-filter: blur(12px);
 }
 
 .cameraFallbackTitle {
-  margin-bottom: 8px;
+  margin: 0 0 8px;
   font-size: 18px;
   font-weight: 700;
 }
 
 .cameraFallbackBody {
+  margin: 0;
   color: #5d5d65;
   font-size: 13px;
   line-height: 1.6;
@@ -208,31 +135,147 @@
 }
 
 .liveChip,
-.qrBadge,
-.blackBadge,
-.whiteBadge,
-.statusBadge,
-.tipPill {
+.stepChip,
+.tipPill,
+.darkPill,
+.darkHudPill,
+.lightStatusPill {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 3;
+  z-index: 4;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  white-space: nowrap;
+  text-align: center;
 }
 
 .liveChip {
   top: 28px;
-  left: 86px;
+  left: 87px;
   transform: none;
   border: 1px solid #d1d1d1;
   background: rgba(255, 255, 255, 0.92);
-  padding: 7px 14px;
+  padding: 7px 16px;
   font-size: 12px;
   font-weight: 700;
+}
+
+.stepChip,
+.darkPill,
+.darkHudPill {
+  background: #121212;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.stepChip {
+  top: 30px;
+  min-width: 110px;
+  min-height: 28px;
+  padding: 5px 18px;
+}
+
+.darkPill {
+  top: 320px;
+  min-width: 110px;
+  min-height: 32px;
+  padding: 7px 18px;
+}
+
+.darkHudPill {
+  top: 120px;
+  min-width: 162px;
+  min-height: 28px;
+  padding: 6px 20px;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+.tipPill,
+.lightStatusPill,
+.scanStatusPill {
+  border: 1px solid #d1d1d1;
+  background: rgba(255, 255, 255, 0.96);
+  color: #111111;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tipPill {
+  bottom: 22px;
+  width: min(calc(100% - 32px), 286px);
+  min-height: 54px;
+  padding: 12px 18px;
+}
+
+.lightStatusPill {
+  top: 332px;
+  width: min(calc(100% - 32px), 186px);
+  min-height: 46px;
+  padding: 8px 18px;
+}
+
+.scanStatusPill {
+  bottom: 22px;
+  width: min(calc(100% - 32px), 286px);
+  min-height: 44px;
+  padding: 10px 18px;
+}
+
+.focusTarget {
+  position: absolute;
+  left: 50%;
+  top: 122px;
+  width: 134px;
+  height: 144px;
+  transform: translateX(-50%);
+  z-index: 3;
+}
+
+.focusTarget::before,
+.focusTarget::after {
+  content: "";
+  position: absolute;
+  background: #111111;
+  border-radius: 2px;
+}
+
+.focusTarget::before {
+  left: 39px;
+  top: 0;
+  width: 16px;
+  height: 3px;
+}
+
+.focusTarget::after {
+  right: 0;
+  top: 0;
+  width: 16px;
+  height: 3px;
+}
+
+.focusCrossHorizontal,
+.focusCrossVertical {
+  position: absolute;
+  background: #111111;
+  border-radius: 2px;
+}
+
+.focusCrossHorizontal {
+  left: 39px;
+  top: 0;
+  width: 3px;
+  height: 16px;
+}
+
+.focusCrossVertical {
+  right: 0;
+  top: 0;
+  width: 3px;
+  height: 16px;
 }
 
 .detectionBox {
@@ -246,7 +289,7 @@
 }
 
 .detectionSecondary {
-  border: 1px solid rgba(154, 154, 154, 0.78);
+  border: 1px solid rgba(154, 154, 154, 0.75);
 }
 
 .detectionTag {
@@ -260,15 +303,14 @@
   color: #393939;
   font-size: 10px;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .scanBand {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 214px;
+  inset: 214px 0 auto;
   height: 42px;
-  background: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.22);
   animation: scanPulse 2.6s ease-in-out infinite;
 }
 
@@ -285,7 +327,7 @@
   position: absolute;
   left: 50%;
   bottom: 34px;
-  z-index: 3;
+  z-index: 4;
   width: 168px;
   transform: translateX(-50%);
   border: 1px solid #d1d1d1;
@@ -296,6 +338,7 @@
 }
 
 .directionCard p {
+  margin: 0;
   color: #393939;
   font-size: 12px;
   font-weight: 700;
@@ -340,115 +383,99 @@
   transform-origin: right center;
 }
 
-.qrBadge {
-  top: 30px;
-  background: #111111;
-  padding: 8px 18px;
-  color: #ffffff;
+.guideFigure {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.guideImage {
+  width: min(100%, 320px);
+  height: auto;
+}
+
+.guideLabelQr {
+  position: absolute;
+  left: calc(50% + 94px);
+  top: 190px;
+  color: #1f1f1f;
   font-size: 12px;
   font-weight: 700;
 }
 
-.tipPill {
-  bottom: 26px;
-  width: 286px;
-  border: 1px solid #d1d1d1;
-  background: rgba(255, 255, 255, 0.96);
-  padding: 12px 18px;
-  color: #111111;
-  font-size: 12px;
-  font-weight: 700;
+.guideLabelQr::before {
+  content: "";
+  position: absolute;
+  right: calc(100% + 8px);
+  top: 10px;
+  width: 54px;
+  height: 1px;
+  background: rgba(17, 17, 17, 0.38);
 }
 
-.qrFrame,
-.qrReadyFrame,
-.unavailableFrame {
+.scanFocusFrame,
+.confirmFrame {
   position: absolute;
   left: 50%;
-  top: 136px;
-  width: 168px;
-  height: 168px;
-  transform: translateX(-50%);
-  border: 2px solid #111111;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.82);
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
 }
 
-.cornerTopLeft,
-.cornerTopRight,
-.cornerBottomLeft,
-.cornerBottomRight {
+.scanFocusFrame {
+  width: 168px;
+  height: 168px;
+}
+
+.confirmFrame {
+  top: 214px;
+  width: 168px;
+  height: 168px;
+  border: 2px solid #111111;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.focusCornerTopLeft,
+.focusCornerTopRight,
+.focusCornerBottomLeft,
+.focusCornerBottomRight {
   position: absolute;
   width: 18px;
   height: 18px;
 }
 
-.cornerTopLeft {
+.focusCornerTopLeft {
   left: 24px;
   top: 24px;
+  border-top: 3px solid #111111;
   border-left: 3px solid #111111;
-  border-top: 3px solid #111111;
-  border-radius: 2px 0 0 0;
 }
 
-.cornerTopRight {
-  right: 24px;
+.focusCornerTopRight {
   top: 24px;
-  border-right: 3px solid #111111;
+  right: 24px;
   border-top: 3px solid #111111;
-  border-radius: 0 2px 0 0;
+  border-right: 3px solid #111111;
 }
 
-.cornerBottomLeft {
+.focusCornerBottomLeft {
   left: 24px;
   bottom: 24px;
-  border-left: 3px solid #111111;
   border-bottom: 3px solid #111111;
-  border-radius: 0 0 0 2px;
+  border-left: 3px solid #111111;
 }
 
-.cornerBottomRight {
+.focusCornerBottomRight {
   right: 24px;
   bottom: 24px;
   border-right: 3px solid #111111;
   border-bottom: 3px solid #111111;
-  border-radius: 0 0 2px 0;
 }
 
-.qrVehicleMark {
-  position: absolute;
-  inset: 45px;
-  border-radius: 16px;
-  border: 1px solid rgba(17, 17, 17, 0.25);
-  background:
-    linear-gradient(180deg, rgba(17, 17, 17, 0.12) 0%, rgba(17, 17, 17, 0.1) 100%);
-}
-
-.qrVehicleMark::before,
-.qrVehicleMark::after {
-  content: "";
-  position: absolute;
-  bottom: 10px;
-  width: 24px;
-  height: 24px;
-  border: 2px solid rgba(17, 17, 17, 0.6);
-  border-radius: 50%;
-  background: #ffffff;
-}
-
-.qrVehicleMark::before {
-  left: 14px;
-}
-
-.qrVehicleMark::after {
-  right: 14px;
-}
-
-.qrReadyFrame {
-  background: rgba(255, 255, 255, 0.92);
-}
-
-.qrPattern {
+.qrMatrix {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -459,100 +486,16 @@
   transform: translate(-50%, -50%);
 }
 
-.qrPattern span {
+.qrMatrix span {
   width: 14px;
   height: 14px;
-  background: #111111;
   border-radius: 2px;
-}
-
-.qrPattern span:nth-child(1),
-.qrPattern span:nth-child(2),
-.qrPattern span:nth-child(4),
-.qrPattern span:nth-child(5),
-.qrPattern span:nth-child(6),
-.qrPattern span:nth-child(9) {
-  display: block;
-}
-
-.blackBadge,
-.statusBadge {
-  top: 314px;
-  background: #111111;
-  padding: 8px 16px;
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.statusBadge {
-  top: 100px;
-  background: rgba(17, 17, 17, 0.96);
-}
-
-.whiteBadge {
-  top: 314px;
-  border: 1px solid #111111;
-  background: rgba(255, 255, 255, 0.98);
-  padding: 9px 20px;
-  color: #111111;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.unavailableCross {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 78px;
-  height: 78px;
-  transform: translate(-50%, -50%);
-}
-
-.unavailableCross::before,
-.unavailableCross::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 38px;
-  width: 78px;
-  height: 2px;
   background: #111111;
 }
 
-.unavailableCross::before {
-  transform: rotate(45deg);
-}
-
-.unavailableCross::after {
-  transform: rotate(-45deg);
-}
-
-.unlockToast {
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  bottom: 18px;
-  z-index: 4;
-  border-radius: 20px;
-  padding: 14px 16px;
-  color: #111111;
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1.5;
-  box-shadow: 0 16px 50px rgba(17, 17, 17, 0.12);
-}
-
-.toastLoading {
-  background: rgba(255, 248, 219, 0.98);
-}
-
-.toastSuccess {
-  background: rgba(218, 255, 231, 0.98);
-}
-
-.toastError {
-  background: rgba(255, 222, 222, 0.98);
+.qrMatrix span:nth-child(2),
+.qrMatrix span:nth-child(4) {
+  visibility: hidden;
 }
 
 .bottomSheet {
@@ -561,17 +504,23 @@
   gap: 12px;
   min-height: 298px;
   border-top: 1px solid #d8d8d8;
-  background: #ffffff;
   padding: 20px 16px 24px;
+  background: #ffffff;
+}
+
+.bottomSheetTall {
+  min-height: 303px;
 }
 
 .bottomSheet h3 {
+  margin: 0;
   font-size: 20px;
   line-height: 1.4;
   font-weight: 800;
 }
 
 .bottomSheet p {
+  margin: 0;
   color: #615f5f;
   font-size: 12px;
   line-height: 1.5;
@@ -614,7 +563,7 @@
 }
 
 .vehicleCard,
-.warningCard,
+.infoCard,
 .insuranceCard {
   border: 1px solid #d8d8d8;
   border-radius: 24px;
@@ -642,10 +591,14 @@
 
 .vehicleStatus {
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 96px;
+  min-height: 30px;
   border: 1px solid #111111;
   border-radius: 999px;
   background: #ffffff;
-  padding: 6px 14px;
+  padding: 5px 14px;
   font-size: 12px;
   font-weight: 700;
 }
@@ -664,9 +617,9 @@
   grid-template-columns: 18px minmax(0, 1fr) auto;
   align-items: center;
   gap: 12px;
-  min-height: 52px;
+  min-height: 40px;
+  padding: 10px 12px;
   background: #ffffff;
-  padding: 12px;
   text-align: left;
 }
 
@@ -690,7 +643,7 @@
 .insuranceContent {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
 }
 
 .insuranceContent strong {
@@ -709,15 +662,20 @@
   font-weight: 600;
 }
 
-.warningCard {
+.infoCard {
   background: #f7f7f7;
   padding: 16px;
 }
 
-.warningCard strong {
+.infoCard strong {
   display: block;
   margin-bottom: 8px;
   font-size: 16px;
+}
+
+.infoCard p {
+  color: #615f5f;
+  font-size: 12px;
 }
 
 .homeIndicator {
@@ -726,92 +684,6 @@
   margin: 0 auto 10px;
   border-radius: 999px;
   background: #111111;
-}
-
-.sidePanel {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.panelCard {
-  padding: 24px;
-}
-
-.panelCard h4 {
-  margin-bottom: 10px;
-  font-size: 20px;
-  font-weight: 800;
-}
-
-.panelCard p {
-  color: #5f5f67;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.qrGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-  margin-top: 20px;
-}
-
-.qrCard {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  border: 1px solid rgba(17, 17, 17, 0.08);
-  border-radius: 20px;
-  background: #ffffff;
-  padding: 16px;
-}
-
-.qrImage {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  aspect-ratio: 1;
-  overflow: hidden;
-  border: 1px solid rgba(17, 17, 17, 0.08);
-  border-radius: 16px;
-  background: #ffffff;
-  padding: 10px;
-}
-
-.qrImage :global(svg) {
-  display: block;
-  width: 100%;
-  height: 100%;
-  shape-rendering: crispEdges;
-}
-
-.qrImage :global(path) {
-  shape-rendering: crispEdges;
-}
-
-.qrCard strong {
-  font-size: 14px;
-}
-
-.qrCard code,
-.modal code {
-  overflow-wrap: anywhere;
-  border-radius: 10px;
-  background: #f0f3f8;
-  padding: 6px 8px;
-  color: #2b3a4d;
-  font-size: 12px;
-  font-family: var(--font-geist-mono), monospace;
-}
-
-.noteList {
-  margin-top: 14px;
-  padding-left: 18px;
-  color: #41414a;
-  font-size: 14px;
-  line-height: 1.7;
 }
 
 .hiddenCanvas {
@@ -839,12 +711,13 @@
 }
 
 .modal h4 {
-  margin-bottom: 8px;
+  margin: 0 0 8px;
   font-size: 22px;
   font-weight: 800;
 }
 
 .modal p {
+  margin: 0;
   color: #5f5f67;
   font-size: 14px;
   line-height: 1.7;
@@ -892,34 +765,31 @@
 @keyframes scanPulse {
   0%,
   100% {
-    opacity: 0.25;
+    opacity: 0.24;
     transform: translateY(-12px);
   }
 
   50% {
-    opacity: 0.7;
+    opacity: 0.68;
     transform: translateY(12px);
-  }
-}
-
-@media (max-width: 1080px) {
-  .statusGrid,
-  .workspace,
-  .qrGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .workspace {
-    max-width: 520px;
   }
 }
 
 @media (max-width: 640px) {
   .page {
     padding: 12px;
+    align-items: stretch;
   }
 
-  .panelCard {
-    padding: 20px;
+  .phone {
+    min-height: calc(100dvh - 24px);
+  }
+
+  .cameraView {
+    height: min(520px, 52dvh);
+  }
+
+  .guideImage {
+    width: min(100%, 292px);
   }
 }
