@@ -225,7 +225,8 @@ export default function ObjectTrackingDemo() {
   const qrLockRef = useRef(false);
 
   const activeVehicle = selectedVehicle ?? getPrimaryVehicle(vehicles);
-  const usesLiveCamera = stage === "tracking" || stage === "scanQr";
+  const usesLiveCamera =
+    stage === "tracking" || stage === "locateQr" || stage === "scanQr";
   const supportContent = getSupportContent(supportMode);
 
   useEffect(() => {
@@ -307,6 +308,23 @@ export default function ObjectTrackingDemo() {
       streamRef.current?.getTracks().forEach((track) => track.stop());
     };
   }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    const stream = streamRef.current;
+
+    if (!video || !stream || !usesLiveCamera) {
+      return;
+    }
+
+    if (video.srcObject !== stream) {
+      video.srcObject = stream;
+    }
+
+    void video.play().catch(() => {
+      // Camera can require a later user gesture on some mobile browsers.
+    });
+  }, [stage, usesLiveCamera]);
 
   useEffect(() => {
     if (stage !== "scanQr") {
