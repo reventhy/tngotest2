@@ -51,7 +51,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Home", href: "/", active: true },
   { label: "Station" },
   { label: "Scan QR", href: "/demo" },
-  { label: "History" },
+  { label: "History", href: "/history" },
   { label: "More" },
 ];
 

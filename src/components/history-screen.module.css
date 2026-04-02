@@ -1,0 +1,442 @@
+.page {
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  background: linear-gradient(180deg, #dedede 0%, #eceff3 100%);
+}
+
+.phone {
+  width: min(100%, 402px);
+  min-height: min(874px, calc(100dvh - 48px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #fdfdfd;
+  box-shadow: 0 24px 80px rgba(17, 17, 17, 0.12);
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+  border-bottom: 1px solid #dbdbdb;
+  padding: 0 16px;
+}
+
+.backButton,
+.topBarSpacer {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #1f1f1f;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.topBarTitle {
+  flex: 1;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #1f1f1f;
+}
+
+.tabsSection {
+  padding: 8px 16px 16px;
+}
+
+.segmentedTabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  min-height: 40px;
+  border: 1px solid #d1d1d1;
+  border-radius: 20px;
+  background: #f6f6f6;
+  padding: 4px;
+}
+
+.tabButton {
+  min-height: 32px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background: transparent;
+  color: #6b6b6b;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.tabButtonActive {
+  border-color: #1f1f1f;
+  background: #1f1f1f;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.scrollArea {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 16px 24px;
+}
+
+.helperText {
+  font-size: 11px;
+  line-height: 1.35;
+  color: #757575;
+}
+
+.cardList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tripCard,
+.transactionCard,
+.detailCard {
+  border: 1px solid #d6d6d6;
+  border-radius: 18px;
+  background: #ffffff;
+}
+
+.tripCard {
+  padding: 16px;
+}
+
+.tripCardButton {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cardHeaderRow,
+.tripFooterRow,
+.detailInfoRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tripCardButton,
+.detailCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.vehicleLabel {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #1f1f1f;
+}
+
+.dateLabel {
+  font-size: 11px;
+  line-height: 1.3;
+  color: #6b6b6b;
+  white-space: nowrap;
+}
+
+.tripMeta {
+  font-size: 11px;
+  line-height: 1.3;
+  color: #6b6b6b;
+}
+
+.metricsRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.metricCard {
+  min-height: 54px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 1px solid #d6d6d6;
+  border-radius: 12px;
+  background: #fdfdfd;
+  padding: 10px 8px;
+}
+
+.metricValue {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #1f1f1f;
+  text-align: center;
+}
+
+.metricLabel {
+  font-size: 9px;
+  line-height: 1.2;
+  color: #757575;
+  text-align: center;
+}
+
+.tripId {
+  font-size: 10px;
+  line-height: 1.2;
+  color: #808080;
+}
+
+.tripAction {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #1f1f1f;
+  cursor: pointer;
+}
+
+.transactionCard {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 116px;
+  padding: 16px;
+}
+
+.transactionIcon {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d5d5d5;
+  border-radius: 999px;
+  background: #f4f4f4;
+}
+
+.transactionIcon::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #cecece;
+}
+
+.transactionBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.transactionTitle {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #1f1f1f;
+}
+
+.transactionMeta {
+  font-size: 11px;
+  line-height: 1.2;
+  color: #6b6b6b;
+}
+
+.transactionSubMeta {
+  font-size: 10px;
+  line-height: 1.2;
+  color: #808080;
+}
+
+.transactionAmountCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.transactionAmount {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #2e2e2e;
+}
+
+.detailScroll {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.mapSection {
+  position: relative;
+  width: calc(100% + 32px);
+  height: 298px;
+  margin: 12px -16px 0;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.mapImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detailContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 16px 24px;
+}
+
+.detailCard {
+  padding: 16px;
+}
+
+.detailInfoRow {
+  font-size: 10px;
+  line-height: 1.2;
+  color: #000000;
+}
+
+.detailInfoValue {
+  font-weight: 500;
+  color: #1f1f1f;
+  text-align: right;
+}
+
+.copyButton {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #1f1f1f;
+  cursor: pointer;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.summaryCard {
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border: 1px solid #d8d8d8;
+  border-radius: 18px;
+  background: #f7f7f7;
+  padding: 12px;
+}
+
+.summaryLabel {
+  font-size: 11px;
+  line-height: 16px;
+  color: #615f5f;
+}
+
+.summaryValue {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 22px;
+  color: #111111;
+}
+
+.emptyState {
+  border: 1px dashed #d1d1d1;
+  border-radius: 18px;
+  background: #ffffff;
+  padding: 24px 16px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #757575;
+}
+
+.homeIndicatorArea {
+  height: 34px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 8px;
+  background: #fdfdfd;
+}
+
+.homeIndicator {
+  width: 144px;
+  height: 5px;
+  border-radius: 999px;
+  background: #1f1f1f;
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 0;
+    background: #ffffff;
+  }
+
+  .phone {
+    width: 100%;
+    min-height: 100dvh;
+    border-radius: 24px 24px 0 0;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .segmentedTabs {
+    min-height: 44px;
+  }
+
+  .tabButton {
+    font-size: 11px;
+    padding: 0 8px;
+  }
+
+  .metricsRow,
+  .summaryGrid {
+    gap: 8px;
+  }
+
+  .metricCard,
+  .summaryCard {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .summaryValue {
+    font-size: 15px;
+  }
+}
