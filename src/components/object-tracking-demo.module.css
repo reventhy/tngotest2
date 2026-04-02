@@ -19,9 +19,12 @@
 
 .phone {
   width: min(100%, 402px);
+  min-height: min(879px, calc(100dvh - 48px));
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
+  border-radius: 24px;
   border: 1px solid #cfcfcf;
-  border-radius: 28px;
   background: #ffffff;
   box-shadow: 0 30px 120px rgba(34, 43, 59, 0.16);
 }
@@ -62,7 +65,7 @@
 
 .cameraView {
   position: relative;
-  height: 520px;
+  min-height: 520px;
   overflow: hidden;
 }
 
@@ -777,16 +780,21 @@
 
 @media (max-width: 640px) {
   .page {
-    padding: 12px;
-    align-items: stretch;
+    padding: 0;
+    background: #ffffff;
   }
 
   .phone {
-    min-height: calc(100dvh - 24px);
+    width: 100%;
+    min-height: 100dvh;
+    border: 0;
+    border-radius: 24px 24px 0 0;
+    box-shadow: none;
   }
 
   .cameraView {
     height: min(520px, 52dvh);
+    min-height: min(520px, 52dvh);
   }
 
   .guideImage {
