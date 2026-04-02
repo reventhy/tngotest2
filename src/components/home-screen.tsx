@@ -5,6 +5,7 @@ import styles from "./home-screen.module.css";
 type PlanCard = {
   title: string;
   price: string;
+  href: string;
 };
 
 type QuickAction = {
@@ -24,10 +25,12 @@ const PLAN_CARDS: PlanCard[] = [
   {
     title: "Vé lượt xe đạp",
     price: "10.000đ/60 phút",
+    href: "/plans?tab=single",
   },
   {
     title: "Vé ngày xe đạp",
     price: "50.000đ/450 phút",
+    href: "/plans?tab=daily",
   },
 ];
 
@@ -119,6 +122,27 @@ function QuickActionCard({ action }: { action: QuickAction }) {
   );
 }
 
+function PlanCardView({ plan }: { plan: PlanCard }) {
+  return (
+    <Link className={styles.planCard} href={plan.href}>
+      <div className={styles.planImage}>
+        <Image
+          alt=""
+          aria-hidden="true"
+          className={styles.planPlaceholder}
+          height={160}
+          src="/figma-home/image-placeholder.png"
+          width={160}
+        />
+      </div>
+      <div className={styles.planCopy}>
+        <h3>{plan.title}</h3>
+        <p>{plan.price}</p>
+      </div>
+    </Link>
+  );
+}
+
 export default function HomeScreen() {
   return (
     <main className={styles.page}>
@@ -162,29 +186,14 @@ export default function HomeScreen() {
           <section className={styles.planSection}>
             <div className={styles.sectionHeader}>
               <h2>Các gói cước</h2>
-              <button className={styles.inlineLink} type="button">
+              <Link className={styles.inlineLink} href="/plans">
                 view all
-              </button>
+              </Link>
             </div>
 
             <div className={styles.planGrid}>
               {PLAN_CARDS.map((plan) => (
-                <article className={styles.planCard} key={plan.title}>
-                  <div className={styles.planImage}>
-                    <Image
-                      alt=""
-                      aria-hidden="true"
-                      className={styles.planPlaceholder}
-                      height={160}
-                      src="/figma-home/image-placeholder.png"
-                      width={160}
-                    />
-                  </div>
-                  <div className={styles.planCopy}>
-                    <h3>{plan.title}</h3>
-                    <p>{plan.price}</p>
-                  </div>
-                </article>
+                <PlanCardView key={plan.title} plan={plan} />
               ))}
             </div>
           </section>
