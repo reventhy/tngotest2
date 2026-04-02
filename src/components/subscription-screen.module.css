@@ -8,6 +8,7 @@
 }
 
 .phone {
+  position: relative;
   width: min(100%, 402px);
   min-height: min(874px, calc(100dvh - 48px));
   display: flex;
@@ -138,7 +139,14 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+}
+
+.planHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .planTitle {
@@ -146,6 +154,24 @@
   font-weight: 700;
   line-height: 1.3;
   color: #393939;
+}
+
+.planVariant {
+  font-size: 12px;
+  line-height: 1.35;
+  color: #615f5f;
+}
+
+.selectionDot {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #b2b2b2;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.selectionDotActive {
+  border: 5px solid #393939;
 }
 
 .planMeta,
@@ -374,6 +400,348 @@
   background: #000000;
 }
 
+.confirmOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  background: rgba(17, 17, 17, 0.44);
+}
+
+.confirmSheet {
+  width: 100%;
+  border-radius: 32px 32px 0 0;
+  background: #ffffff;
+  padding: 10px 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sheetHandle {
+  width: 44px;
+  height: 4px;
+  margin: 0 auto;
+  border-radius: 999px;
+  background: #d1d5db;
+}
+
+.confirmHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.confirmHeader h2 {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #111111;
+}
+
+.confirmHeader p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #615f5f;
+}
+
+.confirmPlanCard {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid #e4e4e7;
+  border-radius: 24px;
+  background: #f8f8f8;
+  padding: 16px;
+}
+
+.confirmPlanLabel {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #616161;
+  text-transform: uppercase;
+}
+
+.confirmPlanCard h3 {
+  margin-top: 2px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #111111;
+}
+
+.confirmPlanSubLabel {
+  margin-top: 2px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #615f5f;
+}
+
+.confirmPlanCard strong {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #111111;
+  white-space: nowrap;
+}
+
+.confirmRows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid #ebebeb;
+  padding-top: 8px;
+}
+
+.confirmRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.confirmRow span {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #616161;
+}
+
+.confirmRow strong {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+  color: #111111;
+  text-align: right;
+}
+
+.confirmNote {
+  border-radius: 20px;
+  background: #f5f5f5;
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #4b5563;
+}
+
+.secondaryCta {
+  width: 100%;
+  border: 1px solid #d4d4d8;
+  border-radius: 999px;
+  background: #ffffff;
+  padding: 14px 18px;
+  color: #111111;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.successScreen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.successHero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 20px 24px;
+  text-align: center;
+}
+
+.successBadge {
+  width: 124px;
+  height: 124px;
+  margin-top: 24px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f4f4f5 0%, #ececec 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.successBadgeInner {
+  width: 92px;
+  height: 92px;
+  border-radius: 999px;
+  background: #393939;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 46px;
+  line-height: 1;
+}
+
+.successTitle {
+  margin-top: 20px;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #111111;
+}
+
+.successSubtitle {
+  max-width: 280px;
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #616161;
+}
+
+.successCard {
+  margin: 0 16px;
+  border-radius: 28px;
+  background: linear-gradient(180deg, #f7f7f7 0%, #ffffff 100%);
+  padding: 20px 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.successCardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.successCardEyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #616161;
+  text-transform: uppercase;
+}
+
+.successCardHeader h2 {
+  margin-top: 2px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #111111;
+}
+
+.successTicketPill {
+  border-radius: 999px;
+  background: #393939;
+  padding: 8px 12px;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.successCardCopy {
+  font-size: 14px;
+  line-height: 1.55;
+  color: #4b5563;
+}
+
+.scanPreview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.qrPreview,
+.phonePreview {
+  position: relative;
+  min-height: 148px;
+  border-radius: 24px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 12px;
+}
+
+.qrPreview span,
+.phonePreview span {
+  position: relative;
+  z-index: 2;
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.78);
+  padding: 6px 10px;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.qrCorners {
+  position: absolute;
+  inset: 20px;
+  border-radius: 20px;
+  border: 3px solid #111111;
+}
+
+.qrCorners::before,
+.qrCorners::after {
+  content: "";
+  position: absolute;
+  background: #111111;
+}
+
+.qrCorners::before {
+  inset: 50% auto auto 50%;
+  width: 56px;
+  height: 56px;
+  transform: translate(-50%, -50%);
+  box-shadow:
+    -40px -40px 0 0 #111111,
+    40px -40px 0 0 #111111,
+    -40px 40px 0 0 #111111,
+    40px 40px 0 0 #111111;
+}
+
+.qrCorners::after {
+  inset: 50% auto auto 50%;
+  width: 18px;
+  height: 18px;
+  transform: translate(-50%, -50%);
+  background: #f8fafc;
+}
+
+.phoneCamera {
+  position: absolute;
+  inset: 14px 24px auto;
+  height: 112px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #0f172a 0%, #334155 100%);
+}
+
+.phoneCamera::before {
+  content: "";
+  position: absolute;
+  inset: 12px 14px auto;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.phoneScannerFrame {
+  position: absolute;
+  inset: 40px;
+  border: 2px solid #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 0 0 999px rgba(17, 17, 17, 0.08) inset;
+}
+
+.scanNote {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #111111;
+}
+
+.successFooter {
+  margin-top: auto;
+  padding: 20px 16px 12px;
+}
+
 @media (max-width: 640px) {
   .page {
     padding: 0;
@@ -385,5 +753,19 @@
     min-height: 100dvh;
     border-radius: 24px 24px 0 0;
     box-shadow: none;
+  }
+
+  .confirmSheet {
+    padding-bottom: 28px;
+  }
+}
+
+@media (max-width: 420px) {
+  .scanPreview {
+    grid-template-columns: 1fr;
+  }
+
+  .successCardHeader {
+    flex-direction: column;
   }
 }
